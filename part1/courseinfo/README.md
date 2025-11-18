@@ -1,3 +1,3 @@
-# Exercises 1.1.-1.2
+# Exercises 1.3.-1.5
 
-This commit contains both exercises, i.e., it already contains the refactoring to the Content component.
+This commit contains the fional result of the exercises resolution.
