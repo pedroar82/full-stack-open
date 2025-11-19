@@ -1,6 +1,9 @@
 import { useState } from 'react'
 
 
+const History = (props) => { if (props.allClicks.length === 0) { return (<div>        the app is used by pressing the buttons      </div>) } return (<div>      button press history: {props.allClicks.join(' ')}    </div>) }
+
+
 const Statistics = (props) => {
   let good = props.good;
   let neutral = props.neutral;
@@ -15,17 +18,26 @@ const Statistics = (props) => {
     return (all > 0) ? (good / all) * 100 : 0;
   }
 
+  if (all > 0) {
+    return (
+      <div>
+        <h1>statistics</h1>
+        <p>good {good} <br />
+          neutral {neutral} <br />
+          bad {bad}<br />
+          all {good + neutral + bad} <br />
+          average {calcAverage()} <br />
+          positive {calcPositive()}% </p>
+      </div>
+    )
+  }
   return (
     <div>
       <h1>statistics</h1>
-      <p>good {good} <br />
-        neutral {neutral} <br />
-        bad {bad}<br />
-        all {good + neutral + bad} <br />
-        average {calcAverage()} <br />
-        positive {calcPositive()}% </p>
+      <p>No feedback given</p>
     </div>
   )
+
 }
 
 const App = () => {
