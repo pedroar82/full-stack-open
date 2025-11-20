@@ -6,6 +6,27 @@ const Button = (props) => (
   </button>
 )
 
+const MostVotes = (props) => {
+
+  const indMaxVotes = props.votes.indexOf(Math.max(...props.votes));
+
+  if (props.votes[indMaxVotes] > 0) {
+    return (
+      <div>
+        <h1>Anecdote with most votes</h1>
+        <p> {props.anecdotes[indMaxVotes]} <br />
+          has {props.votes[indMaxVotes]} votes
+        </p>
+      </div>
+    )
+
+  }
+  return (
+    <div>
+    </div>
+  )
+}
+
 const App = () => {
   const anecdotes = [
     'If it hurts, do it more often.',
@@ -18,7 +39,7 @@ const App = () => {
     'The only way to go fast, is to go well.'
   ]
 
-  const [selected, setSelected] = useState(0)
+  const [selected, setSelected] = useState(Math.floor(Math.random() * anecdotes.length))
   const [votes, setVotes] = useState(Array(anecdotes.length).fill(0))
 
   const nextAnecdote = () => {
@@ -34,11 +55,13 @@ const App = () => {
 
   return (
     <div>
+      <h1>Anecdote of the day</h1>
       <p>{anecdotes[selected]} <br />
         has {votes[selected]} votes
       </p>
       <Button onClick={voteAnecdote} text="vote" />
       <Button onClick={nextAnecdote} text="next anecdote" />
+      <MostVotes votes={votes} anecdotes={anecdotes} />
     </div>
   )
 }
