@@ -1,7 +1,6 @@
 import Part from './Part'
 
 const Content = (props) => {
-  console.log('parts ', props.parts)
   return (
     <div>
       {props.parts.map(note =>
