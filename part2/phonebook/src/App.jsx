@@ -15,7 +15,7 @@ const App = () => {
   const [newName, setNewName] = useState('')
   const [newNumber, setNewNumber] = useState('')
   const [newSearch, setNewSearch] = useState('')
-  const [errorMessage, setErrorMessage] = useState(null)
+  const [errorMessage, setErrorMessage] = useState({ message: null, class: null })
 
   useEffect(() => {
     personService
@@ -35,9 +35,21 @@ const App = () => {
         personService
           .update(personAdd.id, updObject)
           .then(updatedPerson => {
+            setErrorMessage({ message: `Updated ${updatedPerson.name}`, class: 'success' })
             setPersons(persons.map(person => person.id === personAdd.id ? updatedPerson : person))
+            setTimeout(() => {
+              setErrorMessage({ message: null, class: null })
+            }, 5000)
           })
-          .catch(error => { alert(`Update error: ${error.message}`) })
+          .catch(error => {
+            setPersons(persons.filter(person => person.id !== personAdd.id))
+            setErrorMessage({ message: `Information of ${personAdd.name} as already been removed from the server`, class: 'error' })
+            setTimeout(() => {
+              setErrorMessage({ message: null, class: null })
+            }, 5000)
+          })
+        setNewName('')
+        setNewNumber('')
       }
 
     } else {
@@ -49,9 +61,9 @@ const App = () => {
         .create(newPerson)
         .then(returnedPerson => {
           setPersons(persons.concat(returnedPerson))
-          setErrorMessage(`Added ${returnedPerson.name}`)
+          setErrorMessage({ message: `Added ${returnedPerson.name}`, class: 'success' })
           setTimeout(() => {
-            setErrorMessage(null)
+            setErrorMessage({ message: null, class: null })
           }, 5000)
           setNewName('')
           setNewNumber('')
@@ -78,15 +90,24 @@ const App = () => {
         .deletePersonService(id)
         .then(returnResult => {
           setPersons(persons.filter(person => person.id !== returnResult.id))
+          setErrorMessage({ message: `Deleted ${returnResult.name}`, class: 'success' })
+          setTimeout(() => {
+            setErrorMessage({ message: null, class: null })
+          }, 5000)
         })
-        .catch(error => { alert(`Delete error: ${error.message}`) })
+        .catch(error => {
+          setErrorMessage({ message: `Deleted ${returnedPerson.name} error ${error.message}`, class: 'error' })
+          setTimeout(() => {
+            setErrorMessage({ message: null, class: null })
+          }, 5000)
+        })
     }
   }
 
   return (
     <div>
       <h2>Phonebook</h2>
-      <Notification message={errorMessage} />
+      <Notification message={errorMessage.message} className={errorMessage.class} />
       <Filter newSearch={newSearch}
         handleSearchChange={handleSearchChange} />
       <h2>add a new</h2>
