@@ -9,7 +9,7 @@ const Country = ({ info }) => {
             <h1>{info.name.common}</h1>
             <p>Capital {info.capital}</p>
             <p>Area {info.area}</p>
-            <h1>Languages</h1>
+            <h2>Languages</h2>
             <ul>
                 {Object.values(info.languages).map(lang => {
                     return <li key={shortid.generate()}>{lang}</li>
