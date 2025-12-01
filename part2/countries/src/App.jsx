@@ -41,10 +41,21 @@ function App() {
       }
     }
   }
+
+  //handle the click in button show
+  //gets the info for the country clicked
+  const showCountry = (cName) => {
+    countriesService
+      .getCountryInfo(cName)
+      .then(cInfo => {
+        setcountryInfo(cInfo)
+      })
+  }
+
   return (
     <div>
       countries: <input onChange={searchCountry} />
-      <Countries filteredCountries={filterRes} />
+      <Countries filteredCountries={filterRes} showCountry={showCountry} />
       <Country info={countryInfo} />
     </div>
   )
