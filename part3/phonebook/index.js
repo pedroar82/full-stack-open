@@ -52,3 +52,11 @@ app.get('/api/persons/:id', (request, response) => {
         response.status(404).end()  
     }
 })
+
+//3.4: Phonebook backend step 4
+app.delete('/api/persons/:id', (request, response) => {
+  const id = request.params.id
+  persons = persons.filter(person => person.id !== id)
+
+  response.status(204).end()
+})
