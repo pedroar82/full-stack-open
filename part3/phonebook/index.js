@@ -35,7 +35,20 @@ app.get('/api/persons', (request, response) => {
   response.json(persons)
 })
 
+//3.2: Phonebook backend step 2
 app.get('/info', (request, response) => {
     const date = new Date();
     response.send(`<p>Phonebook has info for ${persons.length} people</p>${date}<p></p>`)
+})
+
+//3.3: Phonebook backend step 3
+app.get('/api/persons/:id', (request, response) => {
+  const id = request.params.id
+  const person = persons.find(note => note.id === id)
+    if (person) {    
+        response.json(person)  } 
+    else {    
+        response.statusMessage = `Couldn't find a person having the id ${id}`
+        response.status(404).end()  
+    }
 })
