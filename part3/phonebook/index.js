@@ -1,6 +1,7 @@
 const express = require('express')
 const app = express()
 var morgan = require('morgan')
+const cors = require('cors')
 
 app.use(express.json())
 
@@ -11,6 +12,10 @@ app.use(
     skip: req => req.method !== 'POST'
   })
 );
+
+app.use(cors())
+
+app.use(express.static('dist'))
 
 let  persons = 
     [
@@ -36,7 +41,7 @@ let  persons =
         }
     ]
 
-const PORT = 3001
+const PORT = process.env.PORT || 3001
 
 app.listen(PORT, () => {
   console.log(`Server running on port ${PORT}`)
@@ -88,7 +93,7 @@ app.post('/api/persons', (request, response) => {
     return response.status(400).json({ 
       error: 'Incomplete person entry, the name or number is missing' 
     })
-  } else if (persons.filter(person=> {person.name === body.name})){
+  } else if (persons.some(person=> {person.name === body.name})){
      return response.status(400).json({ 
       error: `The name ${body.name} already exists in the phonebook. Names must be unique` 
     })
