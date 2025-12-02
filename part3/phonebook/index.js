@@ -74,9 +74,14 @@ const generateId = () => {
 app.post('/api/persons', (request, response) => {
   const body = request.body
 
+  //3.6: Phonebook backend step 6
   if (!body.name || !body.number ) {
     return response.status(400).json({ 
-      error: 'incomplete person entry' 
+      error: 'Incomplete person entry, the name or number is missing' 
+    })
+  } else if (persons.filter(person=> {person.name === body.name})){
+     return response.status(400).json({ 
+      error: `The name ${body.name} already exists in the phonebook. Names must be unique` 
     })
   }
 
