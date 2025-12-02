@@ -89,8 +89,8 @@ const App = () => {
       personService
         .deletePersonService(id)
         .then(returnResult => {
-          setPersons(persons.filter(person => person.id !== returnResult.id))
-          setErrorMessage({ message: `Deleted ${returnResult.name}`, class: 'success' })
+          setPersons(persons.filter(person => person.id !== id))
+          setErrorMessage({ message: `Deleted ${name}`, class: 'success' })
           setTimeout(() => {
             setErrorMessage({ message: null, class: null })
           }, 5000)
