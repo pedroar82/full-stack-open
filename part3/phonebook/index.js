@@ -1,7 +1,10 @@
+require('dotenv').config()
+
 const express = require('express')
 const app = express()
 var morgan = require('morgan')
 const cors = require('cors')
+const Person = require('./models/person')
 
 app.use(express.json())
 
@@ -48,7 +51,9 @@ app.listen(PORT, () => {
 })
 
 app.get('/api/persons', (request, response) => {
-  response.json(persons)
+    Person.find({}).then(persons => {
+    response.json(persons)
+  })
 })
 
 //3.2: Phonebook backend step 2
@@ -59,14 +64,18 @@ app.get('/info', (request, response) => {
 
 //3.3: Phonebook backend step 3
 app.get('/api/persons/:id', (request, response) => {
-  const id = request.params.id
+  /* const id = request.params.id
   const person = persons.find(note => note.id === id)
     if (person) {    
         response.json(person)  } 
     else {    
         response.statusMessage = `Couldn't find a person having the id ${id}`
         response.status(404).end()  
-    }
+    } */
+
+    Person.findById(request.params.id).then(person => {
+        response.json(person)
+    })
 })
 
 //3.4: Phonebook backend step 4
@@ -93,20 +102,24 @@ app.post('/api/persons', (request, response) => {
     return response.status(400).json({ 
       error: 'Incomplete person entry, the name or number is missing' 
     })
-  } else if (persons.some(person=> {person.name === body.name})){
-     return response.status(400).json({ 
-      error: `The name ${body.name} already exists in the phonebook. Names must be unique` 
-    })
-  }
+  } 
+  
+  /* Person.find({ name: body.name }).then (exists =>{
+    if (exists) {
+        return response.status(400).json({ 
+         error: `The name ${body.name} already exists in the phonebook. Names must be unique` 
+         })
+    }
 
-  const person = {
+  }) */
+  
+  const person = new Person ({
     name: body.name,
-    number: body.number,
-    id: generateId()
-  }
+    number: body.number
+  })
 
-  persons = persons.concat(person)
-
-  response.json(person)
+   person.save().then(savedPerson => {
+    response.json(savedPerson)
+  })
 })
  
