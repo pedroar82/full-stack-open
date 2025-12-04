@@ -14,6 +14,18 @@ const requestLogger = (request, response, next) => {
   next()
 }
 
+const errorHandler = (error, request, response, next) => {
+  console.error('ERRO>>>', error.message)
+
+  if (error.name === 'CastError') {
+    return response.status(400).send({ error: 'malformatted id' })
+  } else if (error.name === 'ValidationError') { 
+       return response.status(400).json({ error: error.message })
+      //return response.status(400).send(error ) 
+  }
+
+  next(error)
+}
 
 app.use(express.json())
 morgan.token('body', req => JSON.stringify(req.body));
@@ -32,13 +44,11 @@ app.get('/api/persons', (request, response) => {
   })
 })
 
-
-app.get('/info', (request, response) => {
+app.get('/info', (request, response, next) => {
     const date = new Date();
     Person.find({}).then(persons => {
       response.send(`<p>Phonebook has info for ${persons.length} people</p>${date}<p></p>`)
-  })
-    
+  }).catch(error => next(error))  
 })
 
 app.get('/api/persons/:id', (request, response, next) => {
@@ -51,7 +61,6 @@ app.get('/api/persons/:id', (request, response, next) => {
     }).catch(error => next(error))
 })
 
-
 //3.15: Phonebook database, step 3
 app.delete('/api/persons/:id', (request, response, next) => {
   Person.findByIdAndDelete(request.params.id)
@@ -61,7 +70,7 @@ app.delete('/api/persons/:id', (request, response, next) => {
     .catch(error => next(error))
 })
 
-app.post('/api/persons', (request, response) => {
+app.post('/api/persons', (request, response, next) => {
   const body = request.body
 console.log('body', body)
   //3.6: Phonebook backend step 6
@@ -71,23 +80,21 @@ console.log('body', body)
     })
   } 
   
-   Person.find({ name: body.name }).then (exists =>{
-    if (exists) {
-        return response.status(400).json({ 
-         error: `The name ${body.name} already exists in the phonebook. Names must be unique` 
-         })
-    }
+  Person.find({ name: body.name }).then (exists =>{
+      if (exists) {
+          return response.status(400).json({ 
+          error: `The name ${body.name} already exists in the phonebook. Names must be unique` 
+          })
+      }
+        const person = new Person ({
+          name: body.name,
+          number: body.number
+        })
 
-  }) 
-  
-  const person = new Person ({
-    name: body.name,
-    number: body.number
-  })
-
-   person.save().then(savedPerson => {
-    response.json(savedPerson)
-  })
+      person.save().then(savedPerson => {
+        response.json(savedPerson)
+      })
+  }).catch((error) => next(error))
 })
 
 //3.17*: Phonebook database, step 5
@@ -115,15 +122,7 @@ const unknownEndpoint = (request, response) => {
   response.status(404).send({ error: 'unknown endpoint' })
 }
 
-const errorHandler = (error, request, response, next) => {
-  console.error(error.message)
 
-  if (error.name === 'CastError') {
-    return response.status(400).send({ error: 'malformatted id' })
-  }
-
-  next(error)
-}
 
 app.use(unknownEndpoint)
 app.use(errorHandler)
