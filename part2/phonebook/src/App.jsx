@@ -42,11 +42,18 @@ const App = () => {
             }, 5000)
           })
           .catch(error => {
+            if (error.response && error.response.data && error.response.data.error) {
+              setErrorMessage({ message: error.response.data.error, class: 'error' })
+            setTimeout(() => {
+              setErrorMessage({ message: null, class: null })
+            }, 5000)
+          }  else {
             setPersons(persons.filter(person => person.id !== personAdd.id))
             setErrorMessage({ message: `Information of ${personAdd.name} as already been removed from the server`, class: 'error' })
             setTimeout(() => {
               setErrorMessage({ message: null, class: null })
             }, 5000)
+          }
           })
         setNewName('')
         setNewNumber('')
