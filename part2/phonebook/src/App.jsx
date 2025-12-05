@@ -68,6 +68,19 @@ const App = () => {
           setNewName('')
           setNewNumber('')
         })
+        .catch(error => {
+          if (error.response && error.response.data && error.response.data.error) {
+            setErrorMessage({ message: error.response.data.error, class: 'error' })
+            setTimeout(() => {
+              setErrorMessage({ message: null, class: null })
+            }, 5000)
+          } else {
+            setErrorMessage({ message: error.message, class: 'error' })
+            setTimeout(() => {
+              setErrorMessage({ message: null, class: null })
+            }, 5000)
+          }
+        })
     }
     event.preventDefault()
   }
