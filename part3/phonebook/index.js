@@ -15,7 +15,6 @@ const requestLogger = (request, response, next) => {
 }
 
 const errorHandler = (error, request, response, next) => {
-  console.log('--->', error)
   if (error.name === 'CastError') {
     return response.status(400).send({ error: 'malformatted id' })
   } else if (error.name === 'ValidationError') {
@@ -117,7 +116,6 @@ app.put('/api/persons/:id', (request, response, next) => {
     name,
     number,
   }
-console.log('entra', request.params.id)
   Person.findByIdAndUpdate(
     request.params.id,
     updatedPerson,
