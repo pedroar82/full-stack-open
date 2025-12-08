@@ -71,7 +71,7 @@ test('the unique property is id', async () => {
   })
 })
 
-test.only('creates a new blog post', async () => {
+test('creates a new blog post', async () => {
   const newBlog =  {
     title: 'A new post',
     author: 'Acácio Joaquim',
@@ -92,6 +92,22 @@ test.only('creates a new blog post', async () => {
   const titles = notesInBD.body.map((n) => n.title)
   assert(titles.includes('A new post'))
 
+})
+
+test ('if likes property is missing', async () => {
+  const newBlog =  {
+    title: 'A new post2',
+    author: 'Acácio Joaquim',
+    url: 'https://example.com/batatas',
+  }
+
+  const response = await api
+    .post('/api/blogs')
+    .send(newBlog)
+    .expect(201)
+    .expect('Content-Type', /application\/json/)
+
+  assert.strictEqual(response.body.likes, 0)
 })
 
 after(async () => {
