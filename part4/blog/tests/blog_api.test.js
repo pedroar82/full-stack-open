@@ -110,7 +110,7 @@ test ('if likes property is missing', async () => {
   assert.strictEqual(response.body.likes, 0)
 })
 
-test.only('fails with statuscode 400 if title or url does not exist', async () => {
+test('fails with statuscode 400 if title or url does not exist', async () => {
   const invalidNewBlog =  {
     author: 'Acácio Joaquim',
     likes: 2
@@ -121,6 +121,19 @@ test.only('fails with statuscode 400 if title or url does not exist', async () =
     .send(invalidNewBlog)
     .expect(400)
 })
+
+test.only('deletes a note', async () => {
+  //get all the blogs and take one to remove
+  const response = await api.get('/api/blogs')
+  const blogs = response.body
+  const noteToDelete = blogs[blogs.length-1]
+  console.log(blogs, noteToDelete)
+
+  await api
+    .delete(`/api/blogs/${noteToDelete.id}`)
+    .expect(204)
+})
+
 
 after(async () => {
   await mongoose.connection.close()
