@@ -71,6 +71,29 @@ test('the unique property is id', async () => {
   })
 })
 
+test.only('creates a new blog post', async () => {
+  const newBlog =  {
+    title: 'A new post',
+    author: 'Acácio Joaquim',
+    url: 'https://example.com/batatas',
+    likes: 10
+  }
+
+  await api
+    .post('/api/blogs')
+    .send(newBlog)
+    .expect(201)
+    .expect('Content-Type', /application\/json/)
+
+  const notesInBD =  await api.get('/api/blogs')
+
+  assert.strictEqual(notesInBD.body.length, initialBlogs.length+1)
+
+  const titles = notesInBD.body.map((n) => n.title)
+  assert(titles.includes('A new post'))
+
+})
+
 after(async () => {
   await mongoose.connection.close()
 })
