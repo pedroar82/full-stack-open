@@ -122,18 +122,29 @@ test('fails with statuscode 400 if title or url does not exist', async () => {
     .expect(400)
 })
 
-test.only('deletes a note', async () => {
+test('deletes a note', async () => {
   //get all the blogs and take one to remove
   const response = await api.get('/api/blogs')
   const blogs = response.body
   const noteToDelete = blogs[blogs.length-1]
-  console.log(blogs, noteToDelete)
 
   await api
     .delete(`/api/blogs/${noteToDelete.id}`)
     .expect(204)
 })
 
+test.only('updates a note', async () => {
+  const response = await api.get('/api/blogs')
+  const blogs = response.body
+  const noteToUpdate = blogs[blogs.length-1]
+
+  noteToUpdate.likes= noteToUpdate.likes + 10
+
+  await api
+    .put(`/api/blogs/${noteToUpdate.id}`)
+    .send(noteToUpdate)
+    .expect(201)
+})
 
 after(async () => {
   await mongoose.connection.close()
