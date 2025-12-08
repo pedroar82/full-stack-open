@@ -110,6 +110,18 @@ test ('if likes property is missing', async () => {
   assert.strictEqual(response.body.likes, 0)
 })
 
+test.only('fails with statuscode 400 if title or url does not exist', async () => {
+  const invalidNewBlog =  {
+    author: 'Acácio Joaquim',
+    likes: 2
+  }
+
+  await api
+    .post('/api/blogs')
+    .send(invalidNewBlog)
+    .expect(400)
+})
+
 after(async () => {
   await mongoose.connection.close()
 })
