@@ -62,6 +62,14 @@ test('a specific blog is within the returned blogs', async () => {
   assert.strictEqual(contents.includes('A Guide to Express Middleware'), true)
 })
 
+test('the unique property is id', async () => {
+  const response = await api.get('/api/blogs')
+
+  response.body.forEach(blog => {
+    assert.strictEqual(blog.id !== undefined, true)
+    assert.strictEqual(blog._id, undefined)
+  })
+})
 
 after(async () => {
   await mongoose.connection.close()
