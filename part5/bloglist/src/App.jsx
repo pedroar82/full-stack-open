@@ -4,10 +4,12 @@ import BlogForm from './components/BlogForm'
 import Login from './components/Login'
 import blogService from './services/blogs'
 import loginService from './services/login'
+import Notification from './components/Notification'
+import './index.css'
 
 const App = () => {
   const [blogs, setBlogs] = useState([])
-  const [errorMessage, setErrorMessage] = useState(null)
+  const [errorMessage, setErrorMessage] = useState({ message: null, class: null })
   const [username, setUsername] = useState('')
   const [password, setPassword] = useState('')
   const [user, setUser] = useState(null)
@@ -30,6 +32,14 @@ const App = () => {
     }
   }, [])
 
+  const setMessage = (message, mclass) => {
+    console.log('aqui', message, mclass)
+    setErrorMessage({ message: message, class: mclass })
+    setTimeout(() => {
+      setErrorMessage({ message: null, class: null })
+    }, 5000)
+  }
+
   const handleLogin = async (event) => {
     event.preventDefault()
     try {
@@ -39,11 +49,10 @@ const App = () => {
       setUser(user)
       setUsername('')
       setPassword('')
+      console.log('try')
     } catch {
-      setErrorMessage('wrong credentials')
-      setTimeout(() => {
-        setErrorMessage(null)
-      }, 5000)
+      console.log('catch')
+      setMessage('wrong username or password','error')
     }
   }
 
@@ -62,27 +71,30 @@ const App = () => {
       setTitle('')
       setAuthor('')
       setUrl('')
+      setMessage(`a new blog ${response.title} by ${response.author} added`, 'success' )
     } catch (error) {
-      setErrorMessage(`error adding new blog: ${error.message}`)
-      setTimeout(() => {
-        setErrorMessage(null)
-      }, 5000)
+      setMessage(`error adding new blog: ${error.message}`, 'error')
     }
   }
 
   if (user === null) {
     return(
-      <Login
-        handleLogin={handleLogin}
-        username={username}
-        password={password}
-        handleUserChange={e => setUsername(e.target.value)}
-        handlePassChange={e => setPassword(e.target.value)} />
+      <div>
+        <h2>Log in to application</h2>
+        <Notification message={errorMessage.message} className={errorMessage.class} />
+        <Login
+          handleLogin={handleLogin}
+          username={username}
+          password={password}
+          handleUserChange={e => setUsername(e.target.value)}
+          handlePassChange={e => setPassword(e.target.value)} />
+      </div>
     )
   }
   return (
     <div>
       <h2>blogs</h2>
+      <Notification message={errorMessage.message} className={errorMessage.class} />
       <p>{user.name} logged in <button onClick={logout}>logout</button></p>
       <BlogForm
         addBlog={addBlog}
