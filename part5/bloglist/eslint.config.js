@@ -31,7 +31,7 @@ export default [
       '@stylistic/js/quotes': ['error', 'single'],
       '@stylistic/js/semi': ['error', 'never'],
       '@stylistic/js/object-curly-spacing': ['error', 'always'],
-
+      'no-trailing-spaces': 'error',
       'no-unused-vars': ['error', { varsIgnorePattern: '^[A-Z_]' }],
       'react-refresh/only-export-components': [
         'warn',
