@@ -5,6 +5,7 @@ import Login from './components/Login'
 import blogService from './services/blogs'
 import loginService from './services/login'
 import Notification from './components/Notification'
+import Togglable from './components/Togglable'
 import './index.css'
 
 const App = () => {
@@ -96,13 +97,15 @@ const App = () => {
       <h2>blogs</h2>
       <Notification message={errorMessage.message} className={errorMessage.class} />
       <p>{user.name} logged in <button onClick={logout}>logout</button></p>
-      <BlogForm
-        addBlog={addBlog}
-        title={title} author={author}
-        url={url}
-        handleTitleChange={e => setTitle(e.target.value)}
-        handleAuthorChange={e => setAuthor(e.target.value)}
-        handleUrlChange={e => setUrl(e.target.value)} />
+      <Togglable buttonLabel="new blog">
+        <BlogForm
+          addBlog={addBlog}
+          title={title} author={author}
+          url={url}
+          handleTitleChange={e => setTitle(e.target.value)}
+          handleAuthorChange={e => setAuthor(e.target.value)}
+          handleUrlChange={e => setUrl(e.target.value)} />
+      </Togglable>
       {blogs.map(blog =>
         <Blog key={blog.id} blog={blog} />
       )}
