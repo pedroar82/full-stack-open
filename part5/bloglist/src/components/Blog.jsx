@@ -1,6 +1,6 @@
 import { useState } from 'react'
 
-const Blog = ({ blog }) => {
+const Blog = ({ blog, updateBlog }) => {
   const [showDetail, setShowDetail] = useState(false)
 
   const showWhenVisible = { display: showDetail ? '' : 'none' }
@@ -17,6 +17,10 @@ const Blog = ({ blog }) => {
     setShowDetail(!showDetail)
   }
 
+   const likeBlog = event => {
+    updateBlog(blog.id, blog.likes+1)
+  }
+
   return (
     <div style={blogStyle}>
       <div>
@@ -24,7 +28,7 @@ const Blog = ({ blog }) => {
       </div>
       <div style={showWhenVisible}>
         <p>{blog.url}</p>
-        <p>{blog.likes} <button>like</button></p>
+        <p>{blog.likes} <button onClick={likeBlog}>like</button></p>
       </div>
     </div>
   )

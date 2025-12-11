@@ -49,12 +49,12 @@ blogsRouter.put('/:id', userExtractor, async (request, response) => {
   const user = request.user
   const { title, author, url, likes } = request.body
   const blog = await Blog.findById(request.params.id)
-
+  
   if (!blog) {
     return response.status(400).json({ error: 'Blog Id missing or not valid' })
   }
 
-  if ( blog.user.toString() !== user.id.toString() ){
+  if ( blog.user.toString() !== user._id.toString() ){
     return response.status(403).json({ error: 'permission denied' })
   }
 
@@ -62,7 +62,8 @@ blogsRouter.put('/:id', userExtractor, async (request, response) => {
     title: title,
     author: author,
     url: url,
-    likes: likes
+    likes: likes,
+    user: user._id
   }
 
   const savedBlog = await Blog.findByIdAndUpdate(request.params.id, blogUpdated)
