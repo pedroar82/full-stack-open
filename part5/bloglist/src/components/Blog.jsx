@@ -17,7 +17,7 @@ const Blog = ({ blog, updateBlog }) => {
     setShowDetail(!showDetail)
   }
 
-   const likeBlog = event => {
+  const likeBlog = event => {
     updateBlog(blog.id, blog.likes+1)
   }
 
@@ -29,6 +29,7 @@ const Blog = ({ blog, updateBlog }) => {
       <div style={showWhenVisible}>
         <p>{blog.url}</p>
         <p>{blog.likes} <button onClick={likeBlog}>like</button></p>
+        <p>{blog.user ? blog.user.name : ''}</p>
       </div>
     </div>
   )

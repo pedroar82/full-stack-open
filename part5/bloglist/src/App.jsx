@@ -59,7 +59,7 @@ const App = () => {
 
   const createBlog = async (newBlog) => {
     try{
-      const addedBlog = {...newBlog, user: user.id}
+      const addedBlog = { ...newBlog, user: user.id }
       const response = await blogService.create(addedBlog)
       setBlogs(blogs.concat(response))
       setMessage(`a new blog ${response.title} by ${response.author} added`, 'success' )
@@ -71,9 +71,13 @@ const App = () => {
   const updateBlog = async (updatedBlogId, likes) => {
     try{
       const blog = blogs.find(b => b.id === updatedBlogId)
-       const updatedBlog = { ...blog, likes: likes, user: user.id }
+      const updatedBlog =
+       { ...blog,
+         likes: likes,
+         user: user.id }
       const response = await blogService.update(updatedBlog)
-      setBlogs(blogs.map(blog => blog.id === updatedBlog.id ? updatedBlog : blog))
+
+      setBlogs(blogs.map(blog => blog.id === response.id ? response : blog))
       setMessage(`Liked blog ${response.title} by ${response.author}`, 'success' )
     } catch (error) {
       setMessage(`error liking blog: ${error.message}`, 'error')

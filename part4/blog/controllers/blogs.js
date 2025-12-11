@@ -3,7 +3,7 @@ const Blog = require('../models/blog')
 const { userExtractor } = require('../utils/middleware')
 
 blogsRouter.get('/', async (request, response) => {
-  const blogs = await Blog.find({}).populate('user')
+  const blogs = await Blog.find({}).populate('user', { username: 1, name: 1, id: 1 })
   response.json(blogs)
 })
 
@@ -27,7 +27,9 @@ blogsRouter.post('/', userExtractor, async (request, response) => {
   const savedBlog = await blog.save()
   user.blogs = user.blogs.concat(savedBlog._id)
   await user.save()
-  response.status(201).json(savedBlog)
+  //ensure that the full info about the user
+  const savedBlogPop = await savedBlog.populate('user', { username: 1, name: 1, id: 1 })
+  response.status(201).json(savedBlogPop)
 })
 
 blogsRouter.delete('/:id', userExtractor, async (request, response) => {
@@ -49,7 +51,7 @@ blogsRouter.put('/:id', userExtractor, async (request, response) => {
   const user = request.user
   const { title, author, url, likes } = request.body
   const blog = await Blog.findById(request.params.id)
-  
+
   if (!blog) {
     return response.status(400).json({ error: 'Blog Id missing or not valid' })
   }
@@ -66,8 +68,9 @@ blogsRouter.put('/:id', userExtractor, async (request, response) => {
     user: user._id
   }
 
-  const savedBlog = await Blog.findByIdAndUpdate(request.params.id, blogUpdated)
-  response.status(200).json(savedBlog)
+  const savedBlog = await Blog.findByIdAndUpdate(request.params.id, blogUpdated, { new: true })
+  const savedBlogPop = await savedBlog.populate('user', { username: 1, name: 1, id: 1 })
+  response.status(200).json(savedBlogPop)
 })
 
 module.exports = blogsRouter
