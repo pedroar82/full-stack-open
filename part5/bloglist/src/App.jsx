@@ -14,9 +14,6 @@ const App = () => {
   const [username, setUsername] = useState('')
   const [password, setPassword] = useState('')
   const [user, setUser] = useState(null)
-  const [title, setTitle] = useState('')
-  const [author, setAuthor] = useState('')
-  const [url, setUrl] = useState('')
 
   useEffect(() => {
     blogService.getAll().then(blogs =>
@@ -34,7 +31,6 @@ const App = () => {
   }, [])
 
   const setMessage = (message, mclass) => {
-    console.log('aqui', message, mclass)
     setErrorMessage({ message: message, class: mclass })
     setTimeout(() => {
       setErrorMessage({ message: null, class: null })
@@ -50,9 +46,7 @@ const App = () => {
       setUser(user)
       setUsername('')
       setPassword('')
-      console.log('try')
     } catch {
-      console.log('catch')
       setMessage('wrong username or password','error')
     }
   }
@@ -63,15 +57,10 @@ const App = () => {
     setUser(null)
   }
 
-  const addBlog = async (event) => {
-    event.preventDefault()
+  const createBlog = async (newBlog) => {
     try{
-      const newBlog = { title, author, url }
       const response = await blogService.create(newBlog)
       setBlogs(blogs.concat(response))
-      setTitle('')
-      setAuthor('')
-      setUrl('')
       setMessage(`a new blog ${response.title} by ${response.author} added`, 'success' )
     } catch (error) {
       setMessage(`error adding new blog: ${error.message}`, 'error')
@@ -98,13 +87,7 @@ const App = () => {
       <Notification message={errorMessage.message} className={errorMessage.class} />
       <p>{user.name} logged in <button onClick={logout}>logout</button></p>
       <Togglable buttonLabel="new blog">
-        <BlogForm
-          addBlog={addBlog}
-          title={title} author={author}
-          url={url}
-          handleTitleChange={e => setTitle(e.target.value)}
-          handleAuthorChange={e => setAuthor(e.target.value)}
-          handleUrlChange={e => setUrl(e.target.value)} />
+        <BlogForm createBlog={createBlog} />
       </Togglable>
       {blogs.map(blog =>
         <Blog key={blog.id} blog={blog} />
