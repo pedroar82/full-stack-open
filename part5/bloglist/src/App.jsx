@@ -73,10 +73,11 @@ const App = () => {
   const updateBlog = async (updatedBlogId, likes) => {
     try{
       const blog = blogs.find(b => b.id === updatedBlogId)
+
+      //it only updates the blog likes, the user remains the same that has created~the blog
       const updatedBlog =
        { ...blog,
-         likes: likes,
-         user: user.id }
+         likes: likes}
       const response = await blogService.update(updatedBlog)
 
       setBlogs(blogs
@@ -85,6 +86,18 @@ const App = () => {
       setMessage(`Liked blog ${response.title} by ${response.author}`, 'success' )
     } catch (error) {
       setMessage(`error liking blog: ${error.message}`, 'error')
+    }
+  }
+
+  const deleteBlog = async (deletedBlogId) => {
+    try{
+      const response = await blogService.deleteBlog(deletedBlogId)
+      setBlogs(blogs
+        .filter(blog => blog.id != deletedBlogId)
+        .sort((a,b) => b.likes - a.likes))
+      setMessage('Deleted blog', 'success' )
+    } catch (error) {
+      setMessage(`error deleting blog: ${error.message}`, 'error')
     }
   }
 
@@ -111,7 +124,12 @@ const App = () => {
         <BlogForm createBlog={createBlog} />
       </Togglable>
       {blogs.map(blog =>
-        <Blog key={blog.id} blog={blog} updateBlog={updateBlog} />
+        <Blog
+          key={blog.id}
+          blog={blog}
+          updateBlog={updateBlog}
+          deleteBlog={deleteBlog}
+          userId={user.id} />
       )}
     </div>
   )
