@@ -17,7 +17,7 @@ const App = () => {
 
   useEffect(() => {
     blogService.getAll().then(blogs =>
-      setBlogs( blogs )
+      setBlogs( blogs.sort((a,b) => b.likes - a.likes) )
     )
   }, [])
 
@@ -61,7 +61,9 @@ const App = () => {
     try{
       const addedBlog = { ...newBlog, user: user.id }
       const response = await blogService.create(addedBlog)
-      setBlogs(blogs.concat(response))
+      setBlogs(blogs
+        .concat(response)
+        .sort((a,b) => b.likes - a.likes))
       setMessage(`a new blog ${response.title} by ${response.author} added`, 'success' )
     } catch (error) {
       setMessage(`error adding new blog: ${error.message}`, 'error')
@@ -77,7 +79,9 @@ const App = () => {
          user: user.id }
       const response = await blogService.update(updatedBlog)
 
-      setBlogs(blogs.map(blog => blog.id === response.id ? response : blog))
+      setBlogs(blogs
+        .map(blog => blog.id === response.id ? response : blog)
+        .sort((a,b) => b.likes - a.likes))
       setMessage(`Liked blog ${response.title} by ${response.author}`, 'success' )
     } catch (error) {
       setMessage(`error liking blog: ${error.message}`, 'error')
