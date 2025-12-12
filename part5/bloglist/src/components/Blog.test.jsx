@@ -1,4 +1,5 @@
-import { render } from '@testing-library/react'
+import { render, screen } from '@testing-library/react'
+import userEvent from '@testing-library/user-event'
 import Blog from './Blog'
 
 test('renders content', () => {
@@ -18,4 +19,27 @@ test('renders content', () => {
 
   const detail = container.querySelector('.showWhenVisible')
   expect(detail).not.toBeVisible()
+})
+
+
+test('url and likes displayed', async () => {
+  const blog = {
+    title: 'Blog title',
+    author: 'Author',
+    url: 'wwww',
+    likes: 5,
+    user: { id: '11', name: 'Acácio' }
+  }
+
+  const { container } = render(<Blog blog={blog} />)
+
+  const user = userEvent.setup()
+
+  const button = screen.getByText('view')
+  await user.click(button)
+
+  const detailDiv = container.querySelector('.showWhenVisible')
+
+  expect(detailDiv).toHaveTextContent('wwww')
+  expect(detailDiv).toHaveTextContent('5')
 })
