@@ -4,7 +4,7 @@ const Login = ({
   handlePassChange,
   username,
   password
-})=> {
+}) => {
   return (
     <div>
       <form onSubmit={handleLogin}>

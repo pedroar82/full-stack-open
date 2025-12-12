@@ -77,7 +77,7 @@ const App = () => {
       //it only updates the blog likes, the user remains the same that has created~the blog
       const updatedBlog =
        { ...blog,
-         likes: likes}
+         likes: likes }
       const response = await blogService.update(updatedBlog)
 
       setBlogs(blogs
@@ -93,7 +93,7 @@ const App = () => {
     try{
       const response = await blogService.deleteBlog(deletedBlogId)
       setBlogs(blogs
-        .filter(blog => blog.id != deletedBlogId)
+        .filter(blog => blog.id !== deletedBlogId)
         .sort((a,b) => b.likes - a.likes))
       setMessage('Deleted blog', 'success' )
     } catch (error) {
