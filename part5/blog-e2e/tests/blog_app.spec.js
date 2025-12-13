@@ -38,3 +38,34 @@ describe('Blog app', () => {
         })
     })
 })
+
+
+  describe('When logged in', () => {
+    beforeEach(async ({ page, request }) => {
+        await request.post('http://localhost:3001/api/testing/reset')
+        await request.post('http://localhost:3001/api/users', {
+            data: {
+                name: 'Pedro Araújo',
+                username: 'pedroar',
+                password: 'pass'
+            }
+            })
+         await page.goto('http://localhost:5173')    
+        //log the user
+        await page.getByLabel('username').fill('pedroar')    
+        await page.getByLabel('password').fill('pass')
+        await page.getByRole('button', { name: 'login' }).click()     
+    })
+
+    test('a new blog can be created', async ({ page }) => {
+        await page.getByRole('button', { name: 'new blog' }).click()
+        
+        await page.fill('#title', 'New Blog')
+        await page.fill('#author', 'Pedro')
+        await page.fill('#url', 'www.example.pt')
+
+        await page.getByRole('button', { name: 'create' }).click()
+
+        await expect(page.getByText('New Blog Pedro')).toBeVisible()
+    })
+})
