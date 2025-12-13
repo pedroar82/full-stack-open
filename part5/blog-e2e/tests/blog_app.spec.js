@@ -68,4 +68,20 @@ describe('Blog app', () => {
 
         await expect(page.getByText('New Blog Pedro')).toBeVisible()
     })
+
+    test('a new blog can be liked', async ({ page }) => {
+        await page.getByRole('button', { name: 'new blog' }).click()
+        
+        await page.fill('#title', 'New Blog')
+        await page.fill('#author', 'Pedro')
+        await page.fill('#url', 'www.example.pt')
+
+        await page.getByRole('button', { name: 'create' }).click()
+
+        await page.getByRole('button', { name: 'view' }).click()
+        
+        await page.getByRole('button', { name: 'like' }).click()
+
+        await expect(page.getByText('1')).toBeVisible()
+    })
 })
