@@ -49,7 +49,7 @@ describe('Blog app', () => {
                 username: 'pedroar',
                 password: 'pass'
             }
-            })
+        })
          await page.goto('http://localhost:5173')    
         //log the user
         await page.getByLabel('username').fill('pedroar')    
@@ -103,5 +103,31 @@ describe('Blog app', () => {
         await expect(page.getByText('New Blog Pedro')).not.toBeVisible()
     })
 
+     test('user cannot delete the blog', async ({ page, request }) => {
+        await page.getByRole('button', { name: 'new blog' }).click()
+        
+        await page.fill('#title', 'New Blog')
+        await page.fill('#author', 'Pedro')
+        await page.fill('#url', 'www.example.pt')
+
+        await page.getByRole('button', { name: 'create' }).click()
+
+        await page.getByRole('button', { name: 'logout' }).click()
+
+        //log with a different user
+        await request.post('http://localhost:3001/api/users', {
+            data: {
+                name: 'Acácio Cassiano',
+                username: 'acac',
+                password: 'pass'
+            }
+        })
+
+        await page.getByLabel('username').fill('acac')    
+        await page.getByLabel('password').fill('pass')
+        await page.getByRole('button', { name: 'login' }).click()    
+        await page.getByRole('button', { name: 'view' }).click() 
+        await expect(page.getByRole('button', { name: 'delete' })).not.toBeVisible()
+    })
     
 })
