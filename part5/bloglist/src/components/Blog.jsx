@@ -36,13 +36,13 @@ const Blog = ({ blog, updateBlog, deleteBlog, userId }) => {
   }
 
   return (
-    <div className="blogStyle" style={blogStyle}>
+    <div className="blogStyle" data-testid="blog" style={blogStyle}>
       <div>
         {blog.title} {blog.author} <button onClick={toggleView} >{ showDetail ? 'hide' : 'view'}</button>
       </div>
       <div className="showWhenVisible" style={showWhenVisible}>
         <p>{blog.url}</p>
-        <p>{blog.likes} <button onClick={likeBlog}>like</button></p>
+        <p><span data-testid="likes">{blog.likes}</span> <button onClick={likeBlog}>like</button></p>
         <p>{blog.user ? blog.user.name : ''}</p>
         {userId=== blog.user.id
           ?  <button style={deleteButton} onClick={handleDelete}>delete</button>
