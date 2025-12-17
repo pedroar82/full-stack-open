@@ -6,9 +6,23 @@ const notifSlice = createSlice({
   reducers: {
     notification (state, action){
       return action.payload
+    },
+    clearNotification (state, action){
+      return ''
     }
   }
 })
 
-export const { notification } = notifSlice.actions
+const { notification, clearNotification } = notifSlice.actions
+
+export const setNotification = (message, seconds) => {
+  return dispatch => {
+    dispatch(notification(message))
+    setTimeout(() => {
+      dispatch(clearNotification())
+    }, seconds * 1000)
+  }
+}
+
+
 export default notifSlice.reducer
