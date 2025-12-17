@@ -10,7 +10,8 @@ const AnecdoteList = () => {
     .sort((a,b) => b.votes - a.votes))
 
   const vote = (id, content) => {
-    dispatch(voteAnedocte(id))
+    const updAnecdote = anecdotes.find(a => a.id === id)
+    dispatch(voteAnedocte(updAnecdote))
     //trigger notif
     dispatch(notification(`You voted '${content}'`))
   }
