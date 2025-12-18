@@ -15,18 +15,23 @@ const AnecdoteForm = () => {
     },
     onError: (error) => {
       console.log(error.response.data.error)
+      callNotification ('too short anecdote, must have length 5 or more')
     },
   })
+
+  const callNotification = (message) => {
+    notificationDispatch({ type: 'SET', payload: `anecdote '${message}' created` })
+    setTimeout(() => {
+      notificationDispatch({ type: 'RESET' })
+    }, 5000)
+  }
 
   const onCreate = (event) => {
     event.preventDefault()
     const content = event.target.anecdote.value
     event.target.anecdote.value = ''
     newAnecdoteMutation.mutate({ content, votes: 0 })
-    notificationDispatch({ type: 'SET', payload: `anecdote '${content}' created` })
-    setTimeout(() => {
-      notificationDispatch({ type: 'RESET' })
-    }, 5000)
+    callNotification (`anecdote '${content}' created`)
   }
 
   return (
