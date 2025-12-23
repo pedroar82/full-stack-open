@@ -8,19 +8,27 @@ import Notification from './components/Notification'
 import Togglable from './components/Togglable'
 import './index.css'
 import { setNotification } from './reducers/notificationReducer'
-import { useDispatch } from 'react-redux'
+import {
+  initializeBlogs,
+  appendBlog,
+  sortedBlogs,
+  likeBlog,
+  deleteBlog
+} from './reducers/blogReducer'
+import { useDispatch, useSelector } from 'react-redux'
 
 const App = () => {
-  const [blogs, setBlogs] = useState([])
   const [username, setUsername] = useState('')
   const [password, setPassword] = useState('')
   const [user, setUser] = useState(null)
 
+  const dispatch = useDispatch()
+
   useEffect(() => {
-    blogService.getAll().then(blogs =>
-      setBlogs( blogs.sort((a,b) => b.likes - a.likes) )
-    )
-  }, [])
+    dispatch(initializeBlogs())
+  }, [dispatch])
+
+  const blogs = useSelector(sortedBlogs)
 
   useEffect(() => {
     const loggedUserJSON = window.localStorage.getItem('loggedUser')
@@ -30,12 +38,6 @@ const App = () => {
       blogService.setToken(user.token)
     }
   }, [])
-
-  const dispatch = useDispatch()
-
-  const setMessage = (message, mclass) => {
-    dispatch(setNotification({ message: message, className: mclass }))
-  }
 
   const handleLogin = async (event) => {
     event.preventDefault()
@@ -47,7 +49,7 @@ const App = () => {
       setUsername('')
       setPassword('')
     } catch {
-      setMessage('wrong username or password','error')
+      dispatch(setNotification('wrong username or password','error'))
     }
   }
 
@@ -57,48 +59,20 @@ const App = () => {
     setUser(null)
   }
 
-  const createBlog = async (newBlog) => {
-    try{
-      const addedBlog = { ...newBlog, user: user.id }
-      const response = await blogService.create(addedBlog)
-      setBlogs(blogs
-        .concat(response)
-        .sort((a,b) => b.likes - a.likes))
-      setMessage(`a new blog ${response.title} by ${response.author} added`, 'success' )
-    } catch (error) {
-      setMessage(`error adding new blog: ${error.message}`, 'error')
-    }
+  const createBlog = (newBlog) => {
+    const addedBlog = { ...newBlog, user: user.id }
+    dispatch(appendBlog(addedBlog))
   }
 
-  const updateBlog = async (updatedBlogId, likes) => {
-    try{
-      const blog = blogs.find(b => b.id === updatedBlogId)
-
-      //it only updates the blog likes, the user remains the same that has created~the blog
-      const updatedBlog =
-       { ...blog,
-         likes: likes }
-      const response = await blogService.update(updatedBlog)
-
-      setBlogs(blogs
-        .map(blog => blog.id === response.id ? response : blog)
-        .sort((a,b) => b.likes - a.likes))
-      setMessage(`Liked blog ${response.title} by ${response.author}`, 'success' )
-    } catch (error) {
-      setMessage(`error liking blog: ${error.message}`, 'error')
-    }
+  const updateBlog = (updatedBlogId, likes) => {
+    const blog = blogs.find((b) => b.id === updatedBlogId)
+    //it only updates the blog likes, the user remains the same that has created~the blog
+    const updatedBlog = { ...blog, likes: likes }
+    dispatch(likeBlog(updatedBlog))
   }
 
-  const deleteBlog = async (deletedBlogId) => {
-    try{
-      const response = await blogService.deleteBlog(deletedBlogId)
-      setBlogs(blogs
-        .filter(blog => blog.id !== deletedBlogId)
-        .sort((a,b) => b.likes - a.likes))
-      setMessage('Deleted blog', 'success' )
-    } catch (error) {
-      setMessage(`error deleting blog: ${error.message}`, 'error')
-    }
+  const deleteBlogHandler = async (deletedBlogId) => {
+    dispatch(deleteBlog(deletedBlogId))
   }
 
   if (user === null) {
@@ -128,7 +102,7 @@ const App = () => {
           key={blog.id}
           blog={blog}
           updateBlog={updateBlog}
-          deleteBlog={deleteBlog}
+          deleteBlog={deleteBlogHandler}
           userId={user.id} />
       )}
     </div>

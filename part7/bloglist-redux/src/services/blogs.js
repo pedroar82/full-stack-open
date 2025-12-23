@@ -28,7 +28,7 @@ const update = async updatedObject => {
   return response.data
 }
 
-const deleteBlog = async deletedObject => {
+const deleteBlogFromBD = async deletedObject => {
   const config = {
     headers: { Authorization: token }
   }
@@ -41,4 +41,4 @@ export default {
   create,
   update,
   setToken,
-  deleteBlog }
+  deleteBlogFromBD }
