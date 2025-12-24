@@ -1,13 +1,10 @@
-import { useState, useEffect } from 'react'
+import { useEffect } from 'react'
 import Blog from './components/Blog'
 import BlogForm from './components/BlogForm'
 import Login from './components/Login'
-import blogService from './services/blogs'
-import loginService from './services/login'
 import Notification from './components/Notification'
 import Togglable from './components/Togglable'
 import './index.css'
-import { setNotification } from './reducers/notificationReducer'
 import {
   initializeBlogs,
   appendBlog,
@@ -15,48 +12,27 @@ import {
   likeBlog,
   deleteBlog
 } from './reducers/blogReducer'
+import { loginUser, initUser, logoutUser } from './reducers/loginReducer'
 import { useDispatch, useSelector } from 'react-redux'
 
 const App = () => {
-  const [username, setUsername] = useState('')
-  const [password, setPassword] = useState('')
-  const [user, setUser] = useState(null)
-
   const dispatch = useDispatch()
 
   useEffect(() => {
+    dispatch(initUser())
     dispatch(initializeBlogs())
   }, [dispatch])
 
   const blogs = useSelector(sortedBlogs)
+  const user = useSelector(state => state.login)
 
-  useEffect(() => {
-    const loggedUserJSON = window.localStorage.getItem('loggedUser')
-    if (loggedUserJSON) {
-      const user = JSON.parse(loggedUserJSON)
-      setUser(user)
-      blogService.setToken(user.token)
-    }
-  }, [])
-
-  const handleLogin = async (event) => {
-    event.preventDefault()
-    try {
-      const user = await loginService.login({ username, password })
-      window.localStorage.setItem('loggedUser', JSON.stringify(user))
-      blogService.setToken(user.token)
-      setUser(user)
-      setUsername('')
-      setPassword('')
-    } catch {
-      dispatch(setNotification('wrong username or password','error'))
-    }
+  const handleLogin = (username, password) => {
+    dispatch(loginUser(username, password))
   }
 
   const logout = (event) => {
     event.preventDefault()
-    window.localStorage.removeItem('loggedUser')
-    setUser(null)
+    dispatch(logoutUser())
   }
 
   const createBlog = (newBlog) => {
@@ -81,11 +57,7 @@ const App = () => {
         <h2>Log in to application</h2>
         <Notification/>
         <Login
-          handleLogin={handleLogin}
-          username={username}
-          password={password}
-          handleUserChange={e => setUsername(e.target.value)}
-          handlePassChange={e => setPassword(e.target.value)} />
+          handleLogin={handleLogin}/>
       </div>
     )
   }
