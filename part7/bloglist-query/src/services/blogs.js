@@ -1,4 +1,3 @@
-import axios from 'axios'
 const baseUrl = '/api/blogs'
 
 let token = null
@@ -33,19 +32,34 @@ export const create = async (newBlog) => {
   return data
 }
 
-const update = async updatedObject => {
-  const config = {
-    headers: { Authorization: token }
+export const update = async updatedObject => {
+  const options = {
+    method: 'PUT',
+    headers: { 'Content-Type': 'application/json', 'Authorization': token },
+    body: JSON.stringify(updatedObject),
   }
-  const response = await axios.put(`${baseUrl}/${updatedObject.id}`, updatedObject, config)
-  return response.data
+
+  const response = await fetch(`${baseUrl}/${updatedObject.id}`, options)
+  const data = await response.json()
+
+  if (!response.ok) {
+    const message = data?.error || 'Failed to update blog'
+    throw new Error(message)
+  }
+  return data
 }
 
-const deleteBlogFromBD = async deletedObject => {
-  const config = {
-    headers: { Authorization: token }
+export const deleteBlogFromBD = async deletedObject => {
+  const options = {
+    method: 'DELETE',
+    headers: { 'Content-Type': 'application/json', 'Authorization': token },
   }
-  const response = await axios.delete(`${baseUrl}/${deletedObject}`, config)
+  const response = await fetch(`${baseUrl}/${deletedObject}`, options)
+
+  if (!response.ok) {
+    const message = 'Failed to delete blog'
+    throw new Error(message)
+  }
   return response.data
 }
 

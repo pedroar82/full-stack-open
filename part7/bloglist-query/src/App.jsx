@@ -5,10 +5,6 @@ import Login from './components/Login'
 import Notification from './components/Notification'
 import Togglable from './components/Togglable'
 import './index.css'
-import {
-  likeBlog,
-  deleteBlog
-} from './reducers/blogReducer'
 import { loginUser, initUser, logoutUser } from './reducers/loginReducer'
 import { useDispatch, useSelector } from 'react-redux'
 
@@ -66,30 +62,6 @@ const App = () => {
     dispatch(logoutUser())
   }
 
-  const updateBlog = async (updatedBlogId, likes) => {
-    try {
-      const blog = blogs.find((b) => b.id === updatedBlogId)
-      //it only updates the blog likes, the user remains the same that has created~the blog
-      const updatedBlog = { ...blog, likes: likes }
-      dispatch(likeBlog(updatedBlog))
-      notify(
-        `Liked blog ${updatedBlog.title} by ${updatedBlog.author}`,
-        'success'
-      )
-    } catch (error) {
-      notify(`error liking blog: ${error.message}`, 'error')
-    }
-  }
-
-  const deleteBlogHandler = async (deletedBlogId) => {
-    try {
-      dispatch(deleteBlog(deletedBlogId))
-      notify('Deleted blog', 'success')
-    } catch (error) {
-      notify(`error deleting blog: ${error.message}`, 'error')
-    }
-  }
-
   if (user === null) {
     return(
       <div>
@@ -112,8 +84,6 @@ const App = () => {
         <Blog
           key={blog.id}
           blog={blog}
-          updateBlog={updateBlog}
-          deleteBlog={deleteBlogHandler}
           userId={user.id} />
       )}
     </div>
