@@ -6,35 +6,52 @@ import Notification from './components/Notification'
 import Togglable from './components/Togglable'
 import './index.css'
 import {
-  initializeBlogs,
-  appendBlog,
-  sortedBlogs,
   likeBlog,
   deleteBlog
 } from './reducers/blogReducer'
 import { loginUser, initUser, logoutUser } from './reducers/loginReducer'
 import { useDispatch, useSelector } from 'react-redux'
 
-
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query'
-
 import { useNotification } from './contexts/NotificationContext'
+
+import { getAll } from './services/blogs'
 
 const App = () => {
 
   const notify = useNotification()
-
   const queryClient = useQueryClient()
-
   const dispatch = useDispatch()
 
   useEffect(() => {
     dispatch(initUser())
-    dispatch(initializeBlogs())
   }, [dispatch])
 
-  const blogs = useSelector(sortedBlogs)
+  const result = useQuery({
+    queryKey: ['blogs'],
+    queryFn: getAll,
+    retry: 1
+  })
+
+  const blogs = result.data
   const user = useSelector(state => state.login)
+
+  useEffect(() => {
+    if (result.error) {
+      notify(
+        `blogs service not available due to problems in server: ${result.error.message}`,
+        'error'
+      )
+    }
+  }, [result.error, notify])
+
+  if (result.isLoading) {
+    return <div>loading data...</div>
+  }
+
+  if (result.error) {
+    return <div>blogs service not available</div>
+  }
 
   const handleLogin = async  (username, password) => {
     try {
@@ -47,19 +64,6 @@ const App = () => {
   const logout = (event) => {
     event.preventDefault()
     dispatch(logoutUser())
-  }
-
-  const createBlog = async (newBlog) => {
-    try {
-      const addedBlog = { ...newBlog, user: user.id }
-      dispatch(appendBlog(addedBlog))
-      notify(
-        `a new blog ${newBlog.title} by ${newBlog.author} added`,
-        'success'
-      )
-    } catch (error) {
-      notify(`error adding new blog: ${error.message}`, 'error')
-    }
   }
 
   const updateBlog = async (updatedBlogId, likes) => {
@@ -102,7 +106,7 @@ const App = () => {
       <Notification/>
       <p>{user.name} logged in <button onClick={logout}>logout</button></p>
       <Togglable buttonLabel="new blog">
-        <BlogForm createBlog={createBlog} />
+        <BlogForm user={user} />
       </Togglable>
       {blogs.map(blog =>
         <Blog

@@ -7,17 +7,30 @@ const setToken = newToken => {
   token = `Bearer ${newToken}`
 }
 
-const getAll = () => {
-  const request = axios.get(baseUrl)
-  return request.then(response => response.data)
+export const getAll = async () => {
+  const response = await fetch(baseUrl)
+
+  if (!response.ok) {
+    throw new Error('Failed to fetch blogs')
+  }
+  const data = await response.json()
+  return data.sort((a, b) => b.likes - a.likes)
 }
 
-const create = async newObject => {
-  const config = {
-    headers: { Authorization: token }
+export const create = async (newBlog) => {
+  const options = {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json', Authorization: token },
+    body: JSON.stringify(newBlog),
   }
-  const response = await axios.post(baseUrl, newObject, config)
-  return response.data
+  const response = await fetch(baseUrl, options)
+  const data = await response.json()
+
+  if (!response.ok) {
+    const message = data?.error || 'Failed to create blog'
+    throw new Error(message)
+  }
+  return data
 }
 
 const update = async updatedObject => {
