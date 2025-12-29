@@ -1,23 +1,11 @@
-import userService from '../services/users'
-import { useQuery } from '@tanstack/react-query'
+import { Link } from 'react-router-dom'
 
-const Users = ({user, logout}) => {
-  const result = useQuery({
-    queryKey: ['users'],
-    queryFn: userService.getAll,
-    retry: 1,
-  })
-
-  const users = result.data
-  console.log('users-> ', users)
-
+const Users = ({ users }) => {
   if (!users) {
     return null
   }
   return (
     <div>
-      <h2>blogs</h2>
-      <p>{user.name} logged in <button onClick={logout}>logout</button></p>
       <h2>Users</h2>
       <table>
         <thead>
@@ -29,7 +17,9 @@ const Users = ({user, logout}) => {
         <tbody>
           {users.map((user) => (
             <tr key={user.id}>
-              <td>{user.name}</td>
+              <td>
+                <Link to={`/users/${user.id}`}>{user.name}</Link>
+              </td>
               <td>{user.blogs.length || 0}</td>
             </tr>
           ))}

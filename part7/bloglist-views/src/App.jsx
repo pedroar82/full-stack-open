@@ -5,11 +5,13 @@ import Login from './components/Login'
 import Notification from './components/Notification'
 import Togglable from './components/Togglable'
 import Users from './components/Users'
+import User from './components/User'
 import './index.css'
 import { useQuery } from '@tanstack/react-query'
 import { useNotification } from './contexts/NotificationContext'
 import LoginContext from './contexts/LoginContext'
 import blogService from './services/blogs'
+import userService from './services/users'
 import {
   BrowserRouter as Router,
   Routes, Route, Link, useParams, useNavigate
@@ -27,6 +29,14 @@ const App = () => {
       loginDispatch({ type: 'SETUSER', payload: user })
     }
   }, [])
+
+  const resultUsers = useQuery({
+    queryKey: ['users'],
+    queryFn: userService.getAll,
+    retry: 1,
+  })
+
+  const users = resultUsers.data
 
   const result = useQuery({
     queryKey: ['blogs'],
@@ -70,8 +80,11 @@ const App = () => {
   }
   return (
     <Router>
+      <h2>blogs</h2>
+      <p>{user.name} logged in <button onClick={logout}>logout</button></p>
       <Routes>
-        <Route path="/users" element={<Users user={user} logout={logout} />} />
+        <Route path="/users" element={<Users users={users} />} />
+        <Route path="/users/:id" element={<User users={users}  />} />
       </Routes>
     </Router>
   )
