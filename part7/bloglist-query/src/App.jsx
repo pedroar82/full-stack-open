@@ -1,36 +1,36 @@
-import { useEffect } from 'react'
+import { useEffect, useContext } from 'react'
 import Blog from './components/Blog'
 import BlogForm from './components/BlogForm'
 import Login from './components/Login'
 import Notification from './components/Notification'
 import Togglable from './components/Togglable'
 import './index.css'
-import { loginUser, initUser, logoutUser } from './reducers/loginReducer'
-import { useDispatch, useSelector } from 'react-redux'
-
-import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query'
+import { useQuery } from '@tanstack/react-query'
 import { useNotification } from './contexts/NotificationContext'
-
-import { getAll } from './services/blogs'
+import LoginContext from './contexts/LoginContext'
+import blogService from './services/blogs'
 
 const App = () => {
 
   const notify = useNotification()
-  const queryClient = useQueryClient()
-  const dispatch = useDispatch()
+  const { user, loginDispatch } = useContext(LoginContext)
 
   useEffect(() => {
-    dispatch(initUser())
-  }, [dispatch])
+    const loggedUserJSON = window.localStorage.getItem('loggedUser')
+    if (loggedUserJSON) {
+      const user = JSON.parse(loggedUserJSON)
+      blogService.setToken(user.token)
+      loginDispatch({ type: 'SETUSER', payload: user })
+    }
+  }, [])
 
   const result = useQuery({
     queryKey: ['blogs'],
-    queryFn: getAll,
+    queryFn: blogService.getAll,
     retry: 1
   })
 
   const blogs = result.data
-  const user = useSelector(state => state.login)
 
   useEffect(() => {
     if (result.error) {
@@ -49,26 +49,18 @@ const App = () => {
     return <div>blogs service not available</div>
   }
 
-  const handleLogin = async  (username, password) => {
-    try {
-      await dispatch(loginUser(username, password))
-    } catch (error) {
-      notify(`wrong username or password: ${error.message}`, 'error')
-    }
-  }
-
   const logout = (event) => {
     event.preventDefault()
-    dispatch(logoutUser())
+    window.localStorage.removeItem('loggedUser')
+    loginDispatch({ type: 'LOGOUT' })
   }
 
-  if (user === null) {
+  if (!user) {
     return(
       <div>
         <h2>Log in to application</h2>
         <Notification/>
-        <Login
-          handleLogin={handleLogin}/>
+        <Login/>
       </div>
     )
   }

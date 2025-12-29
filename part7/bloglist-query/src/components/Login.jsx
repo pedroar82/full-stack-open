@@ -1,17 +1,32 @@
-import { useState } from 'react'
+import { useState, useContext } from 'react'
+import { useNotification } from '../contexts/NotificationContext'
+import loginService from '../services/login'
+import blogService from '../services/blogs'
+import LoginContext from '../contexts/LoginContext'
 
-const Login = ({ handleLogin }) => {
+const Login = () => {
   const [username, setUsername] = useState('')
   const [password, setPassword] = useState('')
 
-  const login = (event) =>{
+  const notify = useNotification()
+
+  const { loginDispatch } = useContext(LoginContext)
+
+  const handleLogin = async (event) => {
     event.preventDefault()
-    handleLogin(username, password)
+    try {
+      const user = await loginService.login({ username, password })
+      window.localStorage.setItem('loggedUser', JSON.stringify(user))
+      blogService.setToken(user.token)
+      loginDispatch({ type: 'SETUSER', payload: user })
+    } catch (error) {
+      notify('wrong credentials', 'error')
+    }
   }
 
   return (
     <div>
-      <form onSubmit={login}>
+      <form onSubmit={handleLogin}>
         <div>
           <label>
             username
