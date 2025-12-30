@@ -32,3 +32,11 @@ button {
 button:hover {
   background: #f0f0f0;  /* light gray hover */
 }
+
+.divNavbar {
+  background: lightgrey;
+}
+
+.linkPadd {
+  padding: 5px
+}

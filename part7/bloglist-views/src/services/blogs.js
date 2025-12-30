@@ -47,7 +47,6 @@ export const update = async updatedObject => {
     headers: { 'Content-Type': 'application/json', 'Authorization': token },
     body: JSON.stringify(updatedObject),
   }
-console.log('blog service--> ', options)
   const response = await fetch(`${baseUrl}/${updatedObject.id}`, options)
   const data = await response.json()
 

@@ -16,6 +16,20 @@ import {
   Routes, Route, Link, useParams, useNavigate
 } from 'react-router-dom'
 
+const Menu = () => {
+  const padding = {
+    paddingRight: 5
+  }
+  return (
+    <div>
+      <Link style={padding} to="/">blogs</Link>
+      <Link style={padding} to="/users">users</Link>
+     <em>{user} logged in</em>
+
+    </div>
+  )
+}
+
 const App = () => {
   const notify = useNotification()
   const { user, loginDispatch } = useContext(LoginContext)
@@ -79,12 +93,22 @@ const App = () => {
   }
   return (
     <Router>
+      <div className="divNavbar">
+        <Link className="linkPadd" to="/">
+          blogs
+        </Link>
+        <Link className="linkPadd" to="/users">
+          users
+        </Link>
+        <em>
+          {user.name} logged in <button onClick={logout}>logout</button>
+        </em>
+      </div>
       <Notification />
       <h2>blogs</h2>
-      <p>{user.name} logged in <button onClick={logout}>logout</button></p>
       <Routes>
         <Route path="/users" element={<Users users={users} />} />
-        <Route path="/users/:id" element={<User users={users}  />} />
+        <Route path="/users/:id" element={<User users={users} />} />
         <Route path="/" element={<Blogs blogs={blogs} user={user} />} />
         <Route path="/blogs/:id" element={<Blog />} />
       </Routes>
