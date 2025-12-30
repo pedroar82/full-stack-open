@@ -19,6 +19,28 @@ blogsRouter.get('/comments/:id', async (request, response) => {
   response.json(blog.comments || [])
 })
 
+//router required for exercise 7.19: Comments, step 2
+blogsRouter.put('/comments/:id', userExtractor, async (request, response) => {
+  const { title, author, url, user, likes, comments } = request.body
+  const blog = await Blog.findById(request.params.id)
+
+  if (!blog) {
+    return response.status(400).json({ error: 'Blog Id missing or not valid' })
+  }
+
+  const blogUpdated = {
+    title: title,
+    author: author,
+    url: url,
+    likes: likes,
+    user: user.id,
+    comments: comments
+  }
+
+  const savedBlog = await Blog.findByIdAndUpdate(request.params.id, blogUpdated, { new: true })
+  response.status(200).json(savedBlog)
+})
+
 blogsRouter.post('/', userExtractor, async (request, response) => {
   const body = request.body
   const user = request.user

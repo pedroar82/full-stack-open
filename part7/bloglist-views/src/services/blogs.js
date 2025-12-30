@@ -67,6 +67,22 @@ export const update = async updatedObject => {
   return data
 }
 
+export const addComment = async updatedObject => {
+  const options = {
+    method: 'PUT',
+    headers: { 'Content-Type': 'application/json', 'Authorization': token },
+    body: JSON.stringify(updatedObject),
+  }
+  const response = await fetch(`${baseUrl}/comments/${updatedObject.id}`, options)
+  const data = await response.json()
+
+  if (!response.ok) {
+    const message = data?.error || 'Failed to update blog'
+    throw new Error(message)
+  }
+  return data
+}
+
 export const deleteBlogFromBD = async deletedObject => {
   const options = {
     method: 'DELETE',
@@ -88,4 +104,5 @@ export default {
   setToken,
   getBlog,
   getComments,
+  addComment,
   deleteBlogFromBD }
