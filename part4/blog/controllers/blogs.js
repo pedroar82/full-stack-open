@@ -7,6 +7,12 @@ blogsRouter.get('/', async (request, response) => {
   response.json(blogs)
 })
 
+//router required for exercise 7.16: Blog View, it gives one single blog
+blogsRouter.get('/:id', async (request, response) => {
+  const user = await Blog.findById(request.params.id).populate('user', { username: 1, name: 1, id: 1 })
+  response.json(user)
+})
+
 blogsRouter.post('/', userExtractor, async (request, response) => {
   const body = request.body
   const user = request.user

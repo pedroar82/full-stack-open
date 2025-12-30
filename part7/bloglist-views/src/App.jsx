@@ -1,9 +1,8 @@
 import { useEffect, useContext } from 'react'
 import Blog from './components/Blog'
-import BlogForm from './components/BlogForm'
+import Blogs from './components/Blogs'
 import Login from './components/Login'
 import Notification from './components/Notification'
-import Togglable from './components/Togglable'
 import Users from './components/Users'
 import User from './components/User'
 import './index.css'
@@ -80,11 +79,14 @@ const App = () => {
   }
   return (
     <Router>
+      <Notification />
       <h2>blogs</h2>
       <p>{user.name} logged in <button onClick={logout}>logout</button></p>
       <Routes>
         <Route path="/users" element={<Users users={users} />} />
         <Route path="/users/:id" element={<User users={users}  />} />
+        <Route path="/" element={<Blogs blogs={blogs} user={user} />} />
+        <Route path="/blogs/:id" element={<Blog />} />
       </Routes>
     </Router>
   )

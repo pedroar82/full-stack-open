@@ -16,6 +16,15 @@ export const getAll = async () => {
   return data.sort((a, b) => b.likes - a.likes)
 }
 
+export const getBlog = async (id) => {
+  const response = await fetch(`${baseUrl}/${id}`)
+  if (!response.ok) {
+    throw new Error('Failed to fetch blogs')
+  }
+  const data = await response.json()
+  return data
+}
+
 export const create = async (newBlog) => {
   const options = {
     method: 'POST',
@@ -38,7 +47,7 @@ export const update = async updatedObject => {
     headers: { 'Content-Type': 'application/json', 'Authorization': token },
     body: JSON.stringify(updatedObject),
   }
-
+console.log('blog service--> ', options)
   const response = await fetch(`${baseUrl}/${updatedObject.id}`, options)
   const data = await response.json()
 
@@ -68,4 +77,5 @@ export default {
   create,
   update,
   setToken,
+  getBlog,
   deleteBlogFromBD }
