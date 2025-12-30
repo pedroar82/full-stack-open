@@ -1,14 +1,16 @@
 import { Link } from 'react-router-dom'
 import BlogForm from './BlogForm'
 import Togglable from './Togglable'
+import {
+  Table,
+  TableBody,
+  TableCell,
+  TableContainer,
+  TableRow,
+  Paper
+} from '@mui/material'
 
 const Blogs = ({ blogs, user }) => {
-  const blogStyle = {
-    paddingLeft: 2,
-    border: 'solid',
-    borderWidth: 1,
-    marginBottom: 5,
-  }
 
   if (!blogs) {
     return null
@@ -18,20 +20,20 @@ const Blogs = ({ blogs, user }) => {
       <Togglable buttonLabel="create new">
         <BlogForm user={user} />
       </Togglable>
-      {blogs.map((blog) => (
-        <div
-          className="blogStyle"
-          data-testid="blog"
-          style={blogStyle}
-          key={blog.id}
-        >
-          <p>
-            <Link to={`/blogs/${blog.id}`}>
-              {blog.title} {blog.author}
-            </Link>
-          </p>
-        </div>
-      ))}
+      <TableContainer component={Paper}>
+        <Table>
+          <TableBody>
+            {blogs.map((blog) => (
+              <TableRow key={blog.id}>
+                <TableCell>
+                  <Link to={`/blogs/${blog.id}`}>{blog.title}</Link>
+                </TableCell>
+                <TableCell>{blog.author}</TableCell>
+              </TableRow>
+            ))}
+          </TableBody>
+        </Table>
+      </TableContainer>
     </div>
   )
 }

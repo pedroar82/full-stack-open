@@ -1,17 +1,16 @@
 import { useContext } from 'react'
 import NotificationContext from '../contexts/NotificationContext'
+import Alert from '@mui/material/Alert'
 
 const Notification = () => {
 
   const { notification } = useContext(NotificationContext)
 
-  if (notification === null) {
+  if (notification === null || !notification) {
     return null
   }
   return (
-    <div className={notification.className}>
-      {notification.message}
-    </div>
+    <Alert severity={notification.className}>{notification.message}</Alert>
   )
 }
 

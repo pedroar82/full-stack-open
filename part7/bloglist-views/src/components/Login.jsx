@@ -3,6 +3,10 @@ import { useNotification } from '../contexts/NotificationContext'
 import loginService from '../services/login'
 import blogService from '../services/blogs'
 import LoginContext from '../contexts/LoginContext'
+import {
+  TextField,
+  Button,
+} from '@mui/material'
 
 const Login = () => {
   const [username, setUsername] = useState('')
@@ -28,26 +32,24 @@ const Login = () => {
     <div>
       <form onSubmit={handleLogin}>
         <div>
-          <label>
-            username
-            <input
-              type="text"
-              value={username}
-              onChange={e => setUsername(e.target.value)}
-            />
-          </label>
+          <TextField
+            size="small"
+            label="username"
+            value={username}
+            onChange={(e) => setUsername(e.target.value)}
+          />
         </div>
         <div>
-          <label>
-            password
-            <input
-              type="password"
-              value={password}
-              onChange={e => setPassword(e.target.value)}
-            />
-          </label>
+          <TextField
+            size="small"
+            label="password"
+            value={password}
+            onChange={(e) => setPassword(e.target.value)}
+          />
         </div>
-        <button type="submit">login</button>
+        <Button variant="contained" color="primary" type="submit">
+          login
+        </Button>
       </form>
     </div>
   )

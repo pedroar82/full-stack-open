@@ -15,20 +15,8 @@ import {
   BrowserRouter as Router,
   Routes, Route, Link, useParams, useNavigate
 } from 'react-router-dom'
-
-const Menu = () => {
-  const padding = {
-    paddingRight: 5
-  }
-  return (
-    <div>
-      <Link style={padding} to="/">blogs</Link>
-      <Link style={padding} to="/users">users</Link>
-     <em>{user} logged in</em>
-
-    </div>
-  )
-}
+import { Container, AppBar, Toolbar, Button } from '@mui/material'
+import IconButton from '@mui/material/IconButton'
 
 const App = () => {
   const notify = useNotification()
@@ -92,27 +80,42 @@ const App = () => {
     )
   }
   return (
-    <Router>
-      <div className="divNavbar">
-        <Link className="linkPadd" to="/">
-          blogs
-        </Link>
-        <Link className="linkPadd" to="/users">
-          users
-        </Link>
-        <em>
-          {user.name} logged in <button onClick={logout}>logout</button>
-        </em>
-      </div>
-      <Notification />
-      <h2>blogs</h2>
-      <Routes>
-        <Route path="/users" element={<Users users={users} />} />
-        <Route path="/users/:id" element={<User users={users} />} />
-        <Route path="/" element={<Blogs blogs={blogs} user={user} />} />
-        <Route path="/blogs/:id" element={<Blog />} />
-      </Routes>
-    </Router>
+    <Container>
+      <Router>
+        <AppBar position="static">
+          <Toolbar>
+            <IconButton
+              edge="start"
+              color="inherit"
+              aria-label="menu"
+            ></IconButton>
+            <Button color="inherit">
+              <Link to="/">blogs</Link>
+            </Button>
+            <Button color="inherit">
+              <Link to="/users">users</Link>
+            </Button>
+            <em>{user.name} logged in</em>
+            <Button
+              size="small"
+              variant="outlined"
+              color="grey"
+              onClick={logout}
+            >
+              logout
+            </Button>
+          </Toolbar>
+        </AppBar>
+        <Notification />
+        <h2>blogs</h2>
+        <Routes>
+          <Route path="/users" element={<Users users={users} />} />
+          <Route path="/users/:id" element={<User users={users} />} />
+          <Route path="/" element={<Blogs blogs={blogs} user={user} />} />
+          <Route path="/blogs/:id" element={<Blog />} />
+        </Routes>
+      </Router>
+    </Container>
   )
 }
 

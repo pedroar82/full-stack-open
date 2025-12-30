@@ -1,6 +1,10 @@
 import { useNotification } from '../contexts/NotificationContext'
 import { useMutation, useQueryClient  } from '@tanstack/react-query'
 import { create } from '../services/blogs'
+import {
+  Button,
+  TextField
+} from '@mui/material'
 
 const BlogForm = ({ user }) => {
 
@@ -37,13 +41,18 @@ const BlogForm = ({ user }) => {
   return (
     <form onSubmit={addBlog}>
       <div>
-        title: <input name='title'/>
+        <TextField size="small" label="title" name="title" />
       </div>
-      <div>author: <input name='author'/></div>
       <div>
-        <div>url: <input name='url' /></div>
-        <div></div>
-        <button type="submit" >create</button>
+        <TextField size="small" label="author" name="author" />
+      </div>
+      <div>
+        <TextField size="small" label="url" name="url" />
+      </div>
+      <div>
+        <Button size="small" variant="outlined" type="submit">
+          create
+        </Button>
       </div>
     </form>
   )

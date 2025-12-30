@@ -4,6 +4,13 @@ import { useMutation, useQueryClient  } from '@tanstack/react-query'
 import { useParams } from 'react-router-dom'
 import blogService from '../services/blogs'
 import { useQuery } from '@tanstack/react-query'
+import {
+  Button,
+  TextField
+} from '@mui/material'
+
+import IconButton from '@mui/material/IconButton'
+import ThumbUpIcon from '@mui/icons-material/ThumbUp'
 
 const Blog = () => {
   const queryClient = useQueryClient()
@@ -75,14 +82,29 @@ const Blog = () => {
       <h2>{blog.title}</h2>
       <a href={blog.url}>{blog.url}</a>
       <p>
-        {blog.likes} likes <button onClick={likeBlog}>like</button>
+        {blog.likes} likes
+        <IconButton
+          size="medium"
+          aria-label="like blog"
+          onClick={likeBlog}
+          sx={{
+            color: '#f59e0b',
+            '&:hover': {
+              backgroundColor: '#fef3c7',
+            },
+          }}
+        >
+          <ThumbUpIcon fontSize="inherit" />
+        </IconButton>
       </p>
       <p>added by {blog.author}</p>
       <h3>comments</h3>
       <form onSubmit={addCommentHandler}>
         <div>
-          <input name="comment" />
-          <button type="submit">add comment</button>
+          <TextField size="small" label="comment" name="comment" />
+          <Button size="small" variant="outlined" type="submit">
+            add comment
+          </Button>
         </div>
       </form>
       <ul>
