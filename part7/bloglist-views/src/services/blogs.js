@@ -25,6 +25,16 @@ export const getBlog = async (id) => {
   return data
 }
 
+export const getComments = async (id) => {
+  const response = await fetch(`${baseUrl}/comments/${id}`)
+  if (!response.ok) {
+    throw new Error('Failed to fetch comments')
+  }
+  const data = await response.json()
+  return data
+}
+
+
 export const create = async (newBlog) => {
   const options = {
     method: 'POST',
@@ -77,4 +87,5 @@ export default {
   update,
   setToken,
   getBlog,
+  getComments,
   deleteBlogFromBD }

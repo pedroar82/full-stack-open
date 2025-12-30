@@ -19,6 +19,14 @@ const Blog = () => {
   })
   const blog = response.data
 
+  const { data: comments } = useQuery({
+    queryKey: ['comments'],
+    queryFn: () => blogService.getComments(id),
+    retry: 1,
+  })
+
+  console.log('comments--> ', comments)
+
   const updateBlogMutation = useMutation({
     mutationFn: update,
     onSuccess: (updatedBlog) => {
@@ -50,6 +58,12 @@ const Blog = () => {
         {blog.likes} likes <button onClick={likeBlog}>like</button>
       </p>
       <p>added by {blog.author}</p>
+      <h3>comments</h3>
+      <ul>
+        {comments.map((comment, index) => (
+          <li key={index}>{comment}</li>
+        ))}
+      </ul>
     </div>
   )
 }

@@ -9,8 +9,14 @@ blogsRouter.get('/', async (request, response) => {
 
 //router required for exercise 7.16: Blog View, it gives one single blog
 blogsRouter.get('/:id', async (request, response) => {
-  const user = await Blog.findById(request.params.id).populate('user', { username: 1, name: 1, id: 1 })
-  response.json(user)
+  const blog = await Blog.findById(request.params.id).populate('user', { username: 1, name: 1, id: 1 })
+  response.json(blog)
+})
+
+//router required for exercise 7.18: Comments, step 1, it gives the comments for a single blog
+blogsRouter.get('/comments/:id', async (request, response) => {
+  const blog = await Blog.findById(request.params.id)
+  response.json(blog.comments || [])
 })
 
 blogsRouter.post('/', userExtractor, async (request, response) => {
