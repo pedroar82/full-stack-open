@@ -1,0 +1,15 @@
+{
+  "name": "library",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+     "dev": "nodemon index.js"
+  },
+  "author": "Pedro Araújo",
+  "license": "ISC",
+  "dependencies": {
+    "@apollo/server": "^5.2.0",
+    "graphql": "^16.12.0"
+  }
+}
