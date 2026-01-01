@@ -117,7 +117,7 @@ const typeDefs = /* GraphQL */ `
   type Query {
     bookCount: Int
     authorCount: Int
-    allBooks(genre: String): [Book!]
+    allBooks(genre: String, author: String): [Book!]
     allAuthors: [Author]
   }
 
@@ -127,15 +127,24 @@ const typeDefs = /* GraphQL */ `
       author: String
       published: Int!
       genres: [String!]
-    ): Book
+    ): Book,
+    editAuthor(name: String, setBornTo: Int):Author
   }
 `
 const resolvers = {
   Query: {
     authorCount: () => authors.length,
     bookCount: () => books.length,
-    allBooks: (root, args) =>
-      books.filter((b) => b.genres.find((g) => args.genre === g)),
+    allBooks: (root, args) => {
+        let result = books
+        if(args.genre) {
+            result = result.filter((b) => b.genres.includes(args.genre))
+        }
+        if(args.author){
+            result = result.filter((b) => b.author === args.author)
+        }
+        return result
+    },
     allAuthors: () => authors,
   },
   Author: {
@@ -143,17 +152,33 @@ const resolvers = {
   },
   Mutation: {
     addBook: (root, args) => {
+      if (books.find(b => b.title === args.title)) {
+        throw new GraphQLError('Book name must be unique', {
+          extensions: { code: 'BAD_USER_INPUT', invalidArgs: args.name },
+        })
+      }
+
       const book = { ...args, id: uuid() }
       books = books.concat(book)
       //add new athor if doesn't exists
-      const authorIndex = authors.findIndex((a) => a.name === args.author)
-      if (authorIndex !== -1) {
-        authors.concat({ name: args.author })
+      const author = authors.find((a) => a.name === args.author)
+      if (!author) {
+        authors.concat({ name: args.author,  bookCount: 1})
       } else {
         //update bookcount if the author exists
-        authors[authorIndex].bookCount++
+        const updAuthor = { ...author, bookCount: author.bookCount+1 }
+        authors = authors.map((a) => (a.name === args.name ? updAuthor : a))
       }
       return book
+    },
+    editAuthor: (root, args) => {
+      const author = authors.find((a) => a.name === args.name)
+      if (!author) {
+        return null
+      }
+      const updAuthor = { ...author, name: args.name, born: args.setBornTo }
+      authors = authors.map((a) => (a.name === args.name ? updAuthor : a))
+      return updAuthor
     },
   },
 }
