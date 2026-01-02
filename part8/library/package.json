@@ -4,12 +4,14 @@
   "description": "",
   "main": "index.js",
   "scripts": {
-     "dev": "nodemon index.js"
+    "dev": "nodemon index.js"
   },
   "author": "Pedro Araújo",
   "license": "ISC",
   "dependencies": {
     "@apollo/server": "^5.2.0",
-    "graphql": "^16.12.0"
+    "dotenv": "^17.2.3",
+    "graphql": "^16.12.0",
+    "mongoose": "^9.1.1"
   }
 }
