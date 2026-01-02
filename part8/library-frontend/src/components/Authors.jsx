@@ -8,10 +8,12 @@ const Authors = (props) => {
     return null
   }
   const result = useQuery(ALL_AUTHORS)
-
+  
   if (result.loading) {
     return <div>loading...</div>
   }
+
+  const authors = result.data.allAuthors
 
   return (
     <div>
@@ -23,7 +25,7 @@ const Authors = (props) => {
             <th>born</th>
             <th>books</th>
           </tr>
-          {result.data.allAuthors.map((a) => (
+          {authors.map((a) => (
             <tr key={a.id}>
               <td>{a.name}</td>
               <td>{a.born}</td>
@@ -32,7 +34,7 @@ const Authors = (props) => {
           ))}
         </tbody>
       </table>
-      <SetBirthYear/>
+      <SetBirthYear authors={authors} />
     </div>
   )
 }
