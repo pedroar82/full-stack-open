@@ -112,7 +112,7 @@ const typeDefs = /* GraphQL */ `
     name: String!
     born: Int
     id: ID!
-    bookCount: Int
+    bookCount: Int!
   }
 
   type Query {
@@ -164,12 +164,9 @@ const resolvers = {
       //add new athor if doesn't exists
       const author = authors.find((a) => a.name === args.author)
       if (!author) {
-        authors.concat({ name: args.author,  bookCount: 1})
-      } else {
-        //update bookcount if the author exists
-        const updAuthor = { ...author, bookCount: author.bookCount+1 }
-        authors = authors.map((a) => (a.name === args.name ? updAuthor : a))
-      }
+        authors = authors.concat({ name: args.author,  born: null, id: uuid()})
+      } 
+      //console.log('autores: ', books)
       return book
     },
     editAuthor: (root, args) => {
