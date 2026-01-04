@@ -14,6 +14,7 @@ const Authors = (props) => {
   }
 
   const authors = result.data.allAuthors
+  let token = localStorage.getItem('library-user-token')
 
   return (
     <div>
@@ -34,7 +35,7 @@ const Authors = (props) => {
           ))}
         </tbody>
       </table>
-      <SetBirthYear authors={authors} />
+      { token && (<SetBirthYear authors={authors} />)}
     </div>
   )
 }

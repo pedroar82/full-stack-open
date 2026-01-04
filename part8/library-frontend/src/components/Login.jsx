@@ -1,36 +1,51 @@
 import { useState } from 'react'
+import { useMutation } from '@apollo/client/react'
+import { LOGIN } from '../queries'
+import { useNavigate } from 'react-router-dom'
 
-const Login = ({ handleLogin }) => {
+const LoginForm = ({ setError, setToken }) => {
   const [username, setUsername] = useState('')
   const [password, setPassword] = useState('')
+  const navigate = useNavigate()
 
-  const login = (event) =>{
+  const [login] = useMutation(LOGIN, {
+    onError: (error) => {
+      error.graphQLErrors?.length > 0
+        ? setError(error.graphQLErrors[0].message)
+        : setError('Unknow error')
+    },
+  })
+
+  const submit = async (event) => {
     event.preventDefault()
-    handleLogin(username, password)
+    const result = await login({
+      variables: { username, password },
+    })
+    if (result.data) {
+      const token = result.data.login.value
+      setToken(token)
+      localStorage.setItem('library-user-token', token)
+    }
+    navigate('/')
   }
 
   return (
     <div>
-      <form onSubmit={login}>
+      <form onSubmit={submit}>
         <div>
-          <label>
-            name
-            <input
-              type="text"
-              value={username}
-              onChange={e => setUsername(e.target.value)}
-            />
-          </label>
+          username{' '}
+          <input
+            value={username}
+            onChange={({ target }) => setUsername(target.value)}
+          />
         </div>
         <div>
-          <label>
-            password
-            <input
-              type="password"
-              value={password}
-              onChange={e => setPassword(e.target.value)}
-            />
-          </label>
+          password{' '}
+          <input
+            type="password"
+            value={password}
+            onChange={({ target }) => setPassword(target.value)}
+          />
         </div>
         <button type="submit">login</button>
       </form>
@@ -38,4 +53,4 @@ const Login = ({ handleLogin }) => {
   )
 }
 
-export default Login
+export default LoginForm

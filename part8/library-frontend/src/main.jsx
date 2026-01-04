@@ -2,28 +2,25 @@ import { StrictMode } from 'react'
 import { createRoot } from 'react-dom/client'
 import App from './App.jsx'
 
-import { ApolloClient, gql, HttpLink, InMemoryCache } from '@apollo/client'
+import { ApolloClient, HttpLink, InMemoryCache } from '@apollo/client'
 import { ApolloProvider } from '@apollo/client/react'
+import { SetContextLink } from '@apollo/client/link/context'
 
-const client = new ApolloClient({
-  link: new HttpLink({
-    uri: 'http://localhost:4000',
-  }),
-  cache: new InMemoryCache(),
+const authLink = new SetContextLink((preContext) => {
+  const token = localStorage.getItem('library-user-token')
+  return {
+    headers: {
+      ...preContext.headers,
+      authorization: token ? `Bearer ${token}` : '',
+    },
+  }
 })
 
-const query = gql`
-  query {
-    allAuthors {
-      name
-      born
-      bookCount
-    }
-  }
-`
+const httpLink = new HttpLink({ uri: 'http://localhost:4000' })
 
-client.query({ query }).then((response) => {
-  console.log(response.data)
+const client = new ApolloClient({
+  cache: new InMemoryCache(),
+  link: authLink.concat(httpLink),
 })
 
 createRoot(document.getElementById('root')).render(
