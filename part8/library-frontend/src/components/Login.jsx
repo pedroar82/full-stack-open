@@ -3,7 +3,7 @@ import { useMutation } from '@apollo/client/react'
 import { LOGIN } from '../queries'
 import { useNavigate } from 'react-router-dom'
 
-const LoginForm = ({ setError, setToken }) => {
+const LoginForm = ({ setError, setToken, setFavGenre }) => {
   const [username, setUsername] = useState('')
   const [password, setPassword] = useState('')
   const navigate = useNavigate()
@@ -25,6 +25,7 @@ const LoginForm = ({ setError, setToken }) => {
       const token = result.data.login.value
       setToken(token)
       localStorage.setItem('library-user-token', token)
+      setFavGenre(result.data.login.favoriteGenre)
     }
     navigate('/')
   }

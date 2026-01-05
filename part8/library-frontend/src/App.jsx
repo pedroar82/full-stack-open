@@ -5,6 +5,7 @@ import Books from './components/Books'
 import NewBook from './components/NewBook'
 import Login from './components/Login'
 import Notify from './components/Notify'
+import Recommendations from './components/Recommendations'
 import {
   BrowserRouter as Router,
   Routes,
@@ -16,10 +17,10 @@ import {
 
 const App = () => {
   const [token, setToken] = useState(null)
-  const [page, setPage] = useState('authors')
+  const [userFavGenre, setUserFavGenre] = useState('')
   const [errorMessage, setErrorMessage] = useState(null)
 
-   const client = useApolloClient()
+  const client = useApolloClient()
 
   const padding = {
     paddingRight: 5,
@@ -48,17 +49,24 @@ const App = () => {
           <Link style={padding} to="/books">
             books
           </Link>
+          <Link style={padding} to="/recommendations">
+            recommendations
+          </Link>
           {token && (
             <Link style={padding} to="/add">
               add
             </Link>
           )}
-          <Link style={padding} to="/login">
-            login
-          </Link>
-          <Link style={padding} to="/logout">
-            logout
-          </Link>
+          {!token && (
+            <Link style={padding} to="/login">
+              login
+            </Link>
+          )}
+          {token && (
+            <Link style={padding} to="/logout">
+              logout
+            </Link>
+          )}
         </div>
         <Notify errorMessage={errorMessage} />
         <Routes>
@@ -66,13 +74,27 @@ const App = () => {
           <Route path="/books" element={<Books show={'books'} />} />
           <Route path="/" element={<Authors show={'authors'} />} />
           <Route
-            path="/login"
-            element={<Login setToken={setToken} setError={notify} />}
+            path="/recommendations"
+            element={<Recommendations userFavGenre={userFavGenre} />}
           />
-          <Route
-            path="/logout"
-            element={<button onClick={onLogout}>logout</button>}
-          />
+          {!token && (
+            <Route
+              path="/login"
+              element={
+                <Login
+                  setToken={setToken}
+                  setError={notify}
+                  setFavGenre={setUserFavGenre}
+                />
+              }
+            />
+          )}
+          {token && (
+            <Route
+              path="/logout"
+              element={<button onClick={onLogout}>logout</button>}
+            />
+          )}
         </Routes>
       </Router>
     </div>

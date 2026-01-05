@@ -144,6 +144,7 @@ const typeDefs = /* GraphQL */ `
 
   type Token {
     value: String!
+    favoriteGenre: String!
   }
 
   type Query {
@@ -292,7 +293,7 @@ const resolvers = {
         id: user._id,
       }
 
-      return { value: jwt.sign(userForToken, process.env.SECRET) }
+      return { value: jwt.sign(userForToken, process.env.SECRET), favoriteGenre: user.favoriteGenre }
     },
   },
 }
