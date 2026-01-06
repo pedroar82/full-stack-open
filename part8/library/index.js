@@ -173,7 +173,7 @@ const resolvers = {
     bookCount: async () => Book.collection.countDocuments(),
     allBooks: async (root, args) => {
       let search = {}
-      if (args.genre) {
+      if (args.genre && args.genre !== '') {
         search.genres = { $in: [args.genre] }
       }
       if (args.author) {
@@ -190,8 +190,8 @@ const resolvers = {
   Author: {
     bookCount: async (root) => Book.countDocuments({ author: root._id }),
   },
-  Book:{
-    author: async (root) =>  Author.findOne({ _id: root.author  })
+  Book: {
+    author: async (root) => Author.findOne({ _id: root.author }),
   },
   Mutation: {
     addBook: async (root, args, context) => {
@@ -293,7 +293,10 @@ const resolvers = {
         id: user._id,
       }
 
-      return { value: jwt.sign(userForToken, process.env.SECRET), favoriteGenre: user.favoriteGenre }
+      return {
+        value: jwt.sign(userForToken, process.env.SECRET),
+        favoriteGenre: user.favoriteGenre,
+      }
     },
   },
 }

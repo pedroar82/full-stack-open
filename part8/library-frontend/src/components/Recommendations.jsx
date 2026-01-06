@@ -2,7 +2,7 @@ import { useQuery } from '@apollo/client/react'
 import { ALL_BOOKS } from '../queries'
 
 const Recommendations = ({ userFavGenre }) => {
-  const result = useQuery(ALL_BOOKS)
+  const result = useQuery(ALL_BOOKS, {variables: {genre: userFavGenre}})
 
   if (result.loading) {
     return <div>loading...</div>
