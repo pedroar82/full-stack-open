@@ -1,11 +1,11 @@
-import { useState } from 'react'
+import { useState, useEffect } from 'react'
 import { useApolloClient, useQuery, useMutation, useSubscription } from '@apollo/client/react'
 import Authors from './components/Authors'
 import Books from './components/Books'
 import NewBook from './components/NewBook'
 import Login from './components/Login'
 import Notify from './components/Notify'
-import { BOOK_ADDED } from './queries'
+import { BOOK_ADDED, ALL_BOOKS } from './queries'
 import Recommendations from './components/Recommendations'
 import {
   BrowserRouter as Router,
@@ -16,6 +16,26 @@ import {
   useNavigate,
 } from 'react-router-dom'
 
+export const updateCache = (cache, query, addedBook) => {
+  // helper that is used to eliminate saving same book twice
+  const uniqByName = (a) => {
+    let seen = new Set()
+    return a.filter((item) => {
+      let k = item.title
+      return seen.has(k) ? false : seen.add(k)
+    })
+  }
+  cache.updateQuery(query, (data) => {
+    //sometimes is null
+    if (!data?.allBooks) {
+      return data 
+    }
+    return {
+      allBooks: uniqByName(data.allBooks.concat(addedBook)),
+    }
+  })
+}
+
 const App = () => {
   const [token, setToken] = useState(null)
   const [userFavGenre, setUserFavGenre] = useState('')
@@ -23,11 +43,16 @@ const App = () => {
 
   const client = useApolloClient()
 
+  //avoid the need of insert credentials after every refresh
+  useEffect(() => {
+    setToken(localStorage.getItem('library-user-token'))
+  }, [])
+
   useSubscription(BOOK_ADDED, {
-    onData: ({ data }) => {
-      console.log(data)
-      window.alert(`Added book ${data.data.bookAdded.title}`)
-    }
+    onData: ({ data, client }) => {
+      const addedBook = data.data.bookAdded
+      updateCache(client.cache, { query: ALL_BOOKS }, addedBook)
+    },
   })
 
   const padding = {

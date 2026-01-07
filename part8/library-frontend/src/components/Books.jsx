@@ -1,24 +1,24 @@
 import { useState } from 'react'
-import { useQuery } from '@apollo/client/react'
-import { ALL_BOOKS } from '../queries'
+import { useQuery, useSubscription } from '@apollo/client/react'
+import { ALL_BOOKS, BOOK_ADDED } from '../queries'
 
 const Books = () => {
   const [genre, setGenre] = useState('')
 
   //to get all genres, get all books
-  const allBooks = useQuery(ALL_BOOKS, { variables: { genre: '' } })
-  const result = useQuery(ALL_BOOKS, { variables: { genre } })
+  const result = useQuery(ALL_BOOKS) 
+  
+  if (result.loading) return <div>loading...</div>
+  
+  const allBooksData = result.data?.allBooks || []
 
-  if (result.loading || allBooks.loading) {
-    return <div>loading...</div>
-  }
-
-  const books = result.data.allBooks
-  const genres = [
-    ...new Set(
-      allBooks.data.allBooks.reduce((genres, b) => genres.concat(b.genres), [])
-    ),
-  ]
+  const books = genre 
+    ? allBooksData.filter(b => b.genres.includes(genre))
+    : allBooksData
+  
+  const genres = [...new Set(
+    allBooksData.reduce((genres, b) => genres.concat(b.genres), [])
+  )]
 
   const handleSetGenre = (selectedGenre) => {
     setGenre(selectedGenre)
