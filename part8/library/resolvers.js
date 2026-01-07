@@ -21,13 +21,23 @@ const resolvers = {
       }
       return await Book.find(search)
     },
-    allAuthors: async () => Author.find({}),
+    allAuthors: async () => {
+      const authors = await Author.find({})
+
+      const books = await Book.find({})
+
+      return authors.map((author) => ({
+        name: author.name,
+        born: author.born,
+        id: author._id,
+        bookCount: books.filter(
+          (b) => b.author.toString() === author._id.toString()
+        ).length,
+      }))
+    },
     me: (root, args, context) => {
       return context.currentUser
     },
-  },
-  Author: {
-    bookCount: async (root) => Book.countDocuments({ author: root._id }),
   },
   Book: {
     author: async (root) => Author.findOne({ _id: root.author }),
