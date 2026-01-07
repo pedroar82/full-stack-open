@@ -1,10 +1,11 @@
 import { useState } from 'react'
-import { useApolloClient } from '@apollo/client/react'
+import { useApolloClient, useQuery, useMutation, useSubscription } from '@apollo/client/react'
 import Authors from './components/Authors'
 import Books from './components/Books'
 import NewBook from './components/NewBook'
 import Login from './components/Login'
 import Notify from './components/Notify'
+import { BOOK_ADDED } from './queries'
 import Recommendations from './components/Recommendations'
 import {
   BrowserRouter as Router,
@@ -21,6 +22,13 @@ const App = () => {
   const [errorMessage, setErrorMessage] = useState(null)
 
   const client = useApolloClient()
+
+  useSubscription(BOOK_ADDED, {
+    onData: ({ data }) => {
+      console.log(data)
+      window.alert(`Added book ${data.data.bookAdded.title}`)
+    }
+  })
 
   const padding = {
     paddingRight: 5,
