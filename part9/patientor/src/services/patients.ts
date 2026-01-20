@@ -1,7 +1,7 @@
 import { v1 as uuid } from 'uuid'
 import patientsData from '../../data/patients';
 
-import { Patient, NonSensitivePatient } from '../types'
+import { Patient, NonSensitivePatient, NewPatient } from '../types'
 
 const patients: Patient[] = patientsData as Patient[];
 
@@ -19,22 +19,12 @@ const getNonSensitivePatients = (): NonSensitivePatient[] => {
   }));
 }
 
-const addPatient = (
-  name: string,
-  dateOfBirth: string,
-  ssn: string,
-  gender: string,
-  occupation: string
-): Patient => {
+const addPatient = (patient: NewPatient): Patient => {
   const id = uuid();
 
   const newPatient = {
     id: id,
-    name,
-    dateOfBirth,
-    ssn,
-    gender,
-    occupation,
+    ...patient
   };
 
   patients.push(newPatient);
