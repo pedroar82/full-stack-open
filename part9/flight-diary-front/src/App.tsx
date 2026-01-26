@@ -1,6 +1,6 @@
 import {DiaryEntry} from './types'
 import { useState, useEffect } from "react";
-import axios from 'axios';
+import axios, { AxiosError } from 'axios';
 
 const App = () => {
   const url = 'http://localhost:3000/api/diaries';
@@ -24,8 +24,9 @@ const App = () => {
   const [newVisibility, setVisibility] = useState('');
   const [newWeather, setWeather] = useState('');
   const [newComment, setComment] = useState('');
+  const [error, setError] = useState<AxiosError | null>(null);
 
-  const addEntry = (event: React.SyntheticEvent) => {
+  const addEntry = async (event: React.SyntheticEvent) => {
     event.preventDefault()
     const newEntry = {
       date: newDate,
@@ -34,20 +35,32 @@ const App = () => {
       comment: newComment,
     }
 
-    axios.post<DiaryEntry>(url, newEntry)
-      .then(response => {
-        setEntries(entries.concat(response.data))
-      })
-
-    setVisibility('');
-    setWeather('');
-    setComment('');
-    setDate('');
+    try {
+      const response = await axios.post<DiaryEntry>(url, newEntry);
+      setEntries(entries.concat(response.data));
+    } catch (error) {
+       if (axios.isAxiosError(error)) {
+        console.log('error: ', error)
+        setError(error)
+      } else {
+        console.error(error)
+      }
+    } finally {
+      setVisibility('');
+      setWeather('');
+      setComment('');
+      setDate('');
+    }
   }
 
   return (
     <div>
       <h1>Add new entry</h1>
+      {error && (
+        <div style={{ color: 'red' }}>
+          Error: {error.message} 
+        </div>
+      )}
       <form onSubmit={addEntry}>
         <div>
           date
