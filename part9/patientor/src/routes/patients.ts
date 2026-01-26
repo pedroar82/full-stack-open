@@ -33,6 +33,11 @@ router.post('/', newPatientParser, (req: Request<unknown, unknown, NewPatient>, 
   res.json(addedPatient);
 });
 
+router.get('/:id', (req, res) => {
+  const patient = patientService.findById(req.params.id);
+  res.send(patient);
+});
+
 router.use(errorMiddleware);
 
 export default router;

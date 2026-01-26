@@ -24,15 +24,22 @@ const addPatient = (patient: NewPatient): Patient => {
 
   const newPatient = {
     id: id,
-    ...patient
+    ...patient,
+    entries: []
   };
 
   patients.push(newPatient);
   return newPatient;
 }
 
+const findById = (id: string): Patient | undefined => {  
+  const patient = patients.find(p => p.id === id);
+  return patient;
+}
+
 export default {
   getPatients,
   getNonSensitivePatients,
-  addPatient
+  addPatient,
+  findById
 };
