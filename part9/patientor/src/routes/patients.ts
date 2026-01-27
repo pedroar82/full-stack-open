@@ -7,7 +7,7 @@ import { z } from 'zod';
 const router = express.Router();
 
 router.get('/', (_req, res) => {
-  res.send(patientService.getNonSensitivePatients());
+  res.send(patientService.getPatients());
 });
 
 const newPatientParser = (req: Request, _res: Response, next: NextFunction) => { 

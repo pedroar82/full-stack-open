@@ -28,6 +28,19 @@ const PatientInfoPage = ({patients}: PatientInfoPageProps) => {
           </h2>
           <p>ssn: {patient.ssn}</p>
           <p>occupation: {patient.occupation}</p>
+          <h3>entries</h3>
+          {patient.entries.map((e, index) => (
+            <div key={index}>
+              <p>
+                {e.date} {e.description}
+              </p>
+              <ul>
+                {e.diagnosisCodes?.map((d, ind) => (
+                  <li key={ind}>{d}</li>
+                ))}
+              </ul>
+            </div>
+          ))}
         </div>
       )
     }
