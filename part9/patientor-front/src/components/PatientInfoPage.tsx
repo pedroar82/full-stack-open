@@ -1,4 +1,4 @@
-import { Patient, Gender } from "../types";
+import { Patient, Gender, Diagnosis } from "../types";
 import { useParams } from 'react-router-dom'
 import FemaleIcon from '@mui/icons-material/Female';
 import MaleIcon from '@mui/icons-material/Male';
@@ -6,12 +6,17 @@ import TransgenderIcon from '@mui/icons-material/Transgender';
 
 type PatientInfoPageProps = {
     patients: Patient[]
+    diagnoses: Diagnosis[]
 }
 
-const PatientInfoPage = ({patients}: PatientInfoPageProps) => {
+const PatientInfoPage = ({patients, diagnoses}: PatientInfoPageProps) => {
     const params = useParams<{ id: string }>();
     const id = params.id ?? '';
     const patient = patients.find(p=>p.id===id);
+
+    const getDiagnosis = (code: string): string => {
+        return diagnoses.find(d => d.code === code)?.name ?? '';
+    }
 
     if (patient) {
       return (
@@ -36,7 +41,7 @@ const PatientInfoPage = ({patients}: PatientInfoPageProps) => {
               </p>
               <ul>
                 {e.diagnosisCodes?.map((d, ind) => (
-                  <li key={ind}>{d}</li>
+                  <li key={ind}>{d} {getDiagnosis(d)}</li>
                 ))}
               </ul>
             </div>
