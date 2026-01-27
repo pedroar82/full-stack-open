@@ -3,6 +3,9 @@ import { useParams } from 'react-router-dom'
 import FemaleIcon from '@mui/icons-material/Female';
 import MaleIcon from '@mui/icons-material/Male';
 import TransgenderIcon from '@mui/icons-material/Transgender';
+import EntryDetailsPage from "./EntryDetailsPage"
+import Box from '@mui/material/Box';
+
 
 type PatientInfoPageProps = {
     patients: Patient[]
@@ -35,16 +38,20 @@ const PatientInfoPage = ({patients, diagnoses}: PatientInfoPageProps) => {
           <p>occupation: {patient.occupation}</p>
           <h3>entries</h3>
           {patient.entries.map((e, index) => (
-            <div key={index}>
-              <p>
-                {e.date} {e.description}
-              </p>
-              <ul>
-                {e.diagnosisCodes?.map((d, ind) => (
-                  <li key={ind}>{d} {getDiagnosis(d)}</li>
-                ))}
-              </ul>
-            </div>
+            <Box
+              key={index}
+              component="section"
+              sx={{
+                width: '100%',
+                border: 2,
+                borderColor: 'grey.500',
+                borderRadius: 2,
+                p: 1,
+                mt: 1
+              }}
+            >
+              <EntryDetailsPage entry={e} />
+            </Box>
           ))}
         </div>
       )
