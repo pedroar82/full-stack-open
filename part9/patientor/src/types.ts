@@ -72,3 +72,5 @@ export type Entry =
 export type NonSensitivePatient = Omit<Patient, 'ssn' | 'entries'>;
 
 export type NewPatient = z.infer<typeof NewPatientSchema>;
+
+export type NewEntry = Omit<Entry, 'id'>;
