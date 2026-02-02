@@ -2,29 +2,20 @@ import { useState, SyntheticEvent } from "react";
 
 import { Box, TextField ,  Button, Collapse, Grid} from '@mui/material';
 
-import { EntryFormValues, HealthCheckRating } from "../types";
+import { EntryFormValues, HealthCheckRating } from "../../types";
 
 interface Props {
   onSubmit: (values: EntryFormValues) => void;
 }
 
-const AddEntryForm = ({ onSubmit }: Props) => {
+const AddHealtCheckEntry = ({ onSubmit }: Props) => {
 
   const [description, setDescription] = useState('');
   const [date, setDate] = useState('');
   const [specialist, setSpecialist] = useState('');
   const [diagnosisCodes, setDiagnosisCodes] = useState<string[]>([]);
   const [healthCheckRating, setHealthCheckRating] = useState<HealthCheckRating>(0);
- /*  const [sickLeaveSD, setSickLeaveSD] = useState('');   
-  const [sickLeaveED, setSickLeaveED] = useState(''); 
-  const [employerName, setEmployerName] = useState('');
-  const [dischargeDate, setDischargeDate] = useState('');
-  const [dischargeCriteria, setDischargeCriteria] = useState(''); */
-
-  const [dateOfBirth, setDateOfBirth] = useState('');
- 
-
-  const [showForm, setShowForm] = useState(true);
+  const [showForm, setShowForm] = useState(false);
 
   const addEntry= (event: SyntheticEvent) => {
     event.preventDefault();
@@ -41,7 +32,7 @@ const AddEntryForm = ({ onSubmit }: Props) => {
   return (
     <div>
       <form onSubmit={addEntry}>
-        <Box component="section" sx={{ p: 2, border: '1px dashed grey' }}>
+        <Box component="section" sx={{ p: 2, border: '1px dashed grey', mb: 2  }}>
           <Button onClick={() => setShowForm(true)}>
             New HealtCheck entry
           </Button>
@@ -135,4 +126,4 @@ const AddEntryForm = ({ onSubmit }: Props) => {
   )
 };
 
-export default AddEntryForm;
+export default AddHealtCheckEntry;
