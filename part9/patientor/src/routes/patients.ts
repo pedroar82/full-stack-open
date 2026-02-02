@@ -1,7 +1,7 @@
 import express, { Request, Response, NextFunction }  from 'express';
 import patientService from '../services/patients'
 import { NewPatientSchema, toNewEntry} from '../utils';
-import {Patient, NewPatient, NewEntry} from '../types'
+import {Patient, NewPatient, NewEntry, Entry} from '../types'
 import { z } from 'zod';
 
 const router = express.Router();
@@ -48,7 +48,7 @@ router.get('/:id', (req, res) => {
   res.send(patient);
 });
 
-router.post('/:id/entries', newEntryParser, (req: Request<{ id: string }, unknown, NewEntry>, res: Response<Patient>) => {
+router.post('/:id/entries', newEntryParser, (req: Request<{ id: string }, unknown, NewEntry>, res: Response<Entry>) => {
   const addedEntry = patientService.addEntry(req.params.id, req.body);
   res.json(addedEntry);
 });

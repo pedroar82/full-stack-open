@@ -17,7 +17,7 @@ export interface Patient {
   gender: Gender;
   ssn?: string;
   dateOfBirth?: string;
-  entries: Entry[] 
+  entries?: Entry[] 
 }
 
 interface BaseEntry {
@@ -67,3 +67,5 @@ export type Entry =
   | HealthCheckEntry;
 
 export type PatientFormValues = Omit<Patient, "id">;
+
+export type EntryFormValues = Omit<Entry, "id">;

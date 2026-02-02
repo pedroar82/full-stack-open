@@ -39,11 +39,10 @@ const findById = (id: string): Patient | undefined => {
   return patient;
 }
 
-const addEntry = (id: string, entry: NewEntry): Patient | undefined => {
+const addEntry = (id: string, entry: NewEntry): Entry | undefined => {
   const patient = findById(id);
    if (!patient) return undefined;
   const entryId = uuid();
-
   const newEntry = {
     id: entryId,
     ...entry
@@ -55,7 +54,7 @@ const addEntry = (id: string, entry: NewEntry): Patient | undefined => {
     }
   });
   
-  return patient
+  return newEntry
 }
 
 export default {
